@@ -1,7 +1,11 @@
+using CoursesSaleAPI.Extensions;
+using Infrastructure.Data;
+using Infrastructure.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,12 +30,23 @@ namespace CoursesSaleAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddDbContext<OnlineCoursesContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("OnlineCoursesDB")));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CoursesSaleAPI", Version = "v1" });
             });
+
+            services.AddServices();
+            services.AddRepositories();
+            services.AddUnitOfWork();
+
+            //services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+            //{
+            //    builder.AllowAnyOrigin()
+            //           .AllowAnyMethod()
+            //           .AllowAnyHeader();
+            //}));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
