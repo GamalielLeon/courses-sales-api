@@ -21,6 +21,7 @@ namespace Infrastructure.Data
         {
             modelBuilder.Entity<Course>(entity =>
             {
+                entity.HasIndex(e => e.Title).IsUnique(true);
                 entity.Property(e => e.Title).IsRequired().HasMaxLength(500);
                 entity.Property(e => e.Description).HasMaxLength(1000);
                 entity.Property(e => e.PublishingDate).HasColumnType("DATE");
