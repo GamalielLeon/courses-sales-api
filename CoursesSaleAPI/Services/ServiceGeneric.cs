@@ -21,6 +21,7 @@ namespace CoursesSaleAPI.Services
 
         public virtual T Add(T entity)
         {
+            entity.CreatedAt = DateTime.Now;
             T entityCreated = _repository.Add(entity);
             _unitOfWork.Save();
             return entityCreated;
@@ -28,6 +29,7 @@ namespace CoursesSaleAPI.Services
 
         public virtual async Task<T> AddAsync(T entity)
         {
+            entity.CreatedAt = DateTime.Now;
             T entityCreated = await _repository.AddAsync(entity);
             await _unitOfWork.SaveAsync();
             return entityCreated;
@@ -70,7 +72,7 @@ namespace CoursesSaleAPI.Services
             T entityOutOfDate = _repository.Get(id);
             entity.Id = entityOutOfDate.Id;
             entity.CreatedAt = entityOutOfDate.CreatedAt;
-            entity.UpdatedAt = entityOutOfDate.UpdatedAt;
+            entity.UpdatedAt = DateTime.Now;
             entity.CreatedBy = entityOutOfDate.CreatedBy;
             entity.UpdatedBy = entityOutOfDate.UpdatedBy;
 
@@ -84,7 +86,7 @@ namespace CoursesSaleAPI.Services
             T entityOutOfDate = await _repository.GetAsync(id);
             entity.Id = entityOutOfDate.Id;
             entity.CreatedAt = entityOutOfDate.CreatedAt;
-            entity.UpdatedAt = entityOutOfDate.UpdatedAt;
+            entity.UpdatedAt = DateTime.Now;
             entity.CreatedBy = entityOutOfDate.CreatedBy;
             entity.UpdatedBy = entityOutOfDate.UpdatedBy;
 

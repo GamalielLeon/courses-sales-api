@@ -69,12 +69,12 @@ namespace Infrastructure.Repositories
 
         public virtual IQueryable<T> FindByIncluding(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties)
         {
-            return includeProperties.Aggregate(FindBy(predicate), (current, includeProperty) => current.Include(includeProperty));
+            return includeProperties.Aggregate(FindBy(predicate), static(current, includeProperty) => current.Include(includeProperty));
         }
 
         public virtual async Task<ICollection<T>> FindByIncludingAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties)
         {
-            return await includeProperties.Aggregate(FindBy(predicate), (current, includeProperty) => current.Include(includeProperty)).ToListAsync();
+            return await includeProperties.Aggregate(FindBy(predicate), static(current, includeProperty) => current.Include(includeProperty)).ToListAsync();
         }
 
         public virtual T Get(Guid id)
@@ -109,12 +109,12 @@ namespace Infrastructure.Repositories
 
         public virtual IQueryable<T> GetAllIncluding(params Expression<Func<T, object>>[] includeProperties)
         {
-            return includeProperties.Aggregate(GetAll(), (current, includeProperty) => current.Include(includeProperty));
+            return includeProperties.Aggregate(GetAll(), static(current, includeProperty) => current.Include(includeProperty));
         }
 
         public virtual async Task<ICollection<T>> GetAllIncludingAsync(params Expression<Func<T, object>>[] includeProperties)
         {
-            return await includeProperties.Aggregate(GetAll(), (current, includeProperty) => current.Include(includeProperty)).ToListAsync();
+            return await includeProperties.Aggregate(GetAll(), static(current, includeProperty) => current.Include(includeProperty)).ToListAsync();
         }
 
         public virtual T Update(T entity)
