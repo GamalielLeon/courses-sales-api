@@ -29,15 +29,15 @@ namespace CoursesSaleAPI.Controllers
         }
 
         [HttpPost]
-        public virtual async Task<ActionResult<TResponse>> PostAsync([FromBody] TRequest request)
+        public virtual async Task<ActionResult<TResponse>> PostAsync([FromBody] TRequest entityRequest)
         {
-            return Created("", await _service.AddAsync(request));
+            return Created("", await _service.AddAsync(entityRequest));
         }
 
         [HttpPut("{id}")]
-        public virtual async Task<ActionResult<TResponse>> PutAsync(Guid id, [FromBody] TRequest request)
+        public virtual async Task<ActionResult<TResponse>> PutAsync(Guid id, [FromBody] TRequest entityRequest)
         {
-            return Ok(await _service.UpdateAsync(id, request));
+            return Ok(await _service.UpdateAsync(id, entityRequest));
         }
 
         [HttpDelete("{id}")]
