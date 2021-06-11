@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Domain.Constants;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Validations.RequestValidations
 {
     public class DateRangeAttribute : RangeAttribute
     {
-        private const string _dateFormat = "yyyy-MM-dd";
+        public const string KEY_ERROR = ConstantsValidations.RANGE_ERROR;
+        private const string DATE_FORMAT = "yyyy-MM-dd";
 
         public DateRangeAttribute(string minimum, string maximum, string fieldName = "")
-          : base(typeof(DateTime), DateTime.Parse(minimum).ToString(_dateFormat), DateTime.Parse(maximum).ToString(_dateFormat)) => ErrorMessage = Error["DateError"](minimum, maximum, fieldName);
-
-        private static Dictionary<string, Func<string, string, string, string>> Error => new()
+          : base(typeof(DateTime), DateTime.Parse(minimum).ToString(DATE_FORMAT), DateTime.Parse(maximum).ToString(DATE_FORMAT))
         {
-            {"DateError", (minimum, maximum, fieldName) => $"{(fieldName == "" ? "" : fieldName + " ")}field value must be between {minimum} and {maximum}" }
-        };
-
+            ErrorMessage = ConstantsValidations.RangeErrors[KEY_ERROR](new string[] { fieldName, minimum, maximum });
+        }
     }
 }
