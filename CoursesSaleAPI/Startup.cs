@@ -1,4 +1,5 @@
 using CoursesSaleAPI.Extensions;
+using CoursesSaleAPI.Helpers.ErrorHandler;
 using Infrastructure.Data;
 using Infrastructure.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -58,6 +59,8 @@ namespace CoursesSaleAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CoursesSaleAPI v1"));
             }
+
+            app.UseMiddleware<CustomExceptionMiddleware>();
 
             app.UseHttpsRedirection();
 
