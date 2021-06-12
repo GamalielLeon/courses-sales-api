@@ -1,4 +1,6 @@
-﻿using Domain.Contracts.Entity;
+﻿using CoursesSaleAPI.Helpers.ErrorHandler;
+using Domain.Constants;
+using Domain.Contracts.Entity;
 using Domain.Contracts.Repository;
 using Domain.Contracts.Service;
 using Domain.Contracts.UnitOfWork;
@@ -37,24 +39,30 @@ namespace CoursesSaleAPI.Services
 
         public virtual void Delete(Guid id)
         {
-            _repository.Delete(_repository.Get(id));
+            T entityToDelete = _repository.Get(id);
+            if (entityToDelete == null) throw new CustomException(ConstantsErrors.NOT_FOUND, ConstantsErrors.ERROR_DESCRIPTIONS[ConstantsErrors.NOT_FOUND], Code.Error404);
+            _repository.Delete(entityToDelete);
             _unitOfWork.Save();
         }
 
         public virtual async Task DeleteAsync(Guid id)
         {
-            _repository.Delete(await _repository.GetAsync(id));
+            T entityToDelete = await _repository.GetAsync(id);
+            if(entityToDelete == null) throw new CustomException(ConstantsErrors.NOT_FOUND, ConstantsErrors.ERROR_DESCRIPTIONS[ConstantsErrors.NOT_FOUND], Code.Error404);
+            _repository.Delete(entityToDelete);
             await _unitOfWork.SaveAsync();
         }
 
         public virtual T Get(Guid id)
         {
-            return _repository.Get(id);
+            T entity = _repository.Get(id);
+            return entity ?? throw new CustomException(ConstantsErrors.NOT_FOUND ,ConstantsErrors.ERROR_DESCRIPTIONS[ConstantsErrors.NOT_FOUND], Code.Error404);
         }
 
         public virtual async Task<T> GetAsync(Guid id)
         {
-            return await _repository.GetAsync(id);
+            T entity = await _repository.GetAsync(id);
+            return entity ?? throw new CustomException(ConstantsErrors.NOT_FOUND, ConstantsErrors.ERROR_DESCRIPTIONS[ConstantsErrors.NOT_FOUND], Code.Error404);
         }
 
         public virtual IQueryable<T> GetAll()
@@ -70,6 +78,8 @@ namespace CoursesSaleAPI.Services
         public virtual T Update(Guid id, T entity)
         {
             T entityOutOfDate = _repository.Get(id);
+            if (entityOutOfDate == null) throw new CustomException(ConstantsErrors.NOT_FOUND, ConstantsErrors.ERROR_DESCRIPTIONS[ConstantsErrors.NOT_FOUND], Code.Error404);
+
             entity.Id = entityOutOfDate.Id;
             entity.CreatedAt = entityOutOfDate.CreatedAt;
             entity.UpdatedAt = DateTime.Now;
@@ -84,6 +94,8 @@ namespace CoursesSaleAPI.Services
         public virtual async Task<T> UpdateAsync(Guid id, T entity)
         {
             T entityOutOfDate = await _repository.GetAsync(id);
+            if(entityOutOfDate == null) throw new CustomException(ConstantsErrors.NOT_FOUND, ConstantsErrors.ERROR_DESCRIPTIONS[ConstantsErrors.NOT_FOUND], Code.Error404);
+
             entity.Id = entityOutOfDate.Id;
             entity.CreatedAt = entityOutOfDate.CreatedAt;
             entity.UpdatedAt = DateTime.Now;

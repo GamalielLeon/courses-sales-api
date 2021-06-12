@@ -44,7 +44,7 @@ namespace CoursesSaleAPI.Controllers
         public virtual async Task<ActionResult> DeleteAsync(Guid id)
         {
             await _service.DeleteAsync(id);
-            return Ok();
+            return NoContent();
         }
     }
 }
