@@ -8,7 +8,9 @@ namespace CoursesSaleAPI.Extensions
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            return services.AddScoped(typeof(IServiceGeneric<>), typeof(ServiceGeneric<>));
+            services.AddScoped(typeof(IServiceGeneric<>), typeof(ServiceGeneric<>));
+            services.AddScoped<IServiceCourse, ServiceCourse>();
+            return services;
         }
     }
 }
