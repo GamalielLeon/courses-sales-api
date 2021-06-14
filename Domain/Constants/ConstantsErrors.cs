@@ -5,6 +5,7 @@ namespace Domain.Constants
     public static class ConstantsErrors
     {
         public static ICollection<string> MethodsAllowed => new string[] { "GET", "POST", "PUT", "DELETE" };
+        public static ICollection<string> MethodsWithJSONContentType => new string[] { "POST", "PUT" };
 
         public const string ERROR_HANDLED = "Error handled";
         public const string SERVER_ERROR = "Server error";

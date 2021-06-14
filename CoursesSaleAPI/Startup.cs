@@ -1,4 +1,5 @@
 using CoursesSaleAPI.Extensions;
+using CoursesSaleAPI.Helpers.Automapper;
 using CoursesSaleAPI.Helpers.ErrorHandler;
 using Infrastructure.Data;
 using Infrastructure.Extensions;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +34,9 @@ namespace CoursesSaleAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<OnlineCoursesContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("OnlineCoursesDB")));
+            //This works only with the "AutoMapper.Extensions.Microsoft.DependencyInjection" package:
+            //services.AddAutoMapper(typeof(MappingProfile));
+            services.AddAutoMapper();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -42,12 +47,12 @@ namespace CoursesSaleAPI
             services.AddRepositories();
             services.AddUnitOfWork();
 
-            //services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
-            //{
-            //    builder.AllowAnyOrigin()
-            //           .AllowAnyMethod()
-            //           .AllowAnyHeader();
-            //}));
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
