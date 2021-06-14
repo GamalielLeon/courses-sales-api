@@ -23,7 +23,7 @@ namespace CoursesSaleAPI.Helpers.ErrorHandler
             {
                 HttpRequest request = context.Request;
 
-                if (request.ContentType != _applicationJson) 
+                if (ConstantsErrors.MethodsWithJSONContentType.Contains(request.Method) && request.ContentType != _applicationJson) 
                     throw new CustomException(ConstantsErrors.UNSUPPORTED_MEDIA_TYPE, ConstantsErrors.ERROR_DESCRIPTIONS[ConstantsErrors.UNSUPPORTED_MEDIA_TYPE], Code.Error415);
 
                 if(!ConstantsErrors.MethodsAllowed.Contains(request.Method)) 
