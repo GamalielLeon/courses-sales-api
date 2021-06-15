@@ -6,7 +6,7 @@ namespace Domain.DTOs.Request
     public class PriceRequest
     {
         [RequiredField(nameof(CourseId))]
-        public Guid CourseId { get; set; }
+        public Guid? CourseId { get; set; }
         [RequiredField(nameof(CurrentPrice))]
         [NumberRange(0,999999, nameof(CurrentPrice))]
         public decimal? CurrentPrice { get; set; }
