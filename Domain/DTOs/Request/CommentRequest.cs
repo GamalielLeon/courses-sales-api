@@ -7,14 +7,13 @@ namespace Domain.DTOs.Request
     public class CommentRequest
     {
         [RequiredField(nameof(CourseId))]
-        public Guid CourseId { get; set; }
-        [Required(AllowEmptyStrings = false)]
+        public Guid? CourseId { get; set; }
         [RequiredField(nameof(StudentName))]
         public string StudentName { get; set; }
         public string Message { get; set; }
         [RequiredField(nameof(Score))]
         [NumberRange(1,5, nameof(Score))]
-        public int? Score { get; set; }
+        public byte? Score { get; set; }
         public Guid? CreatedBy { get; set; }
         public Guid? UpdatedBy { get; set; }
     }
