@@ -10,13 +10,14 @@ namespace CoursesSaleAPI.Helpers.Automapper
     {
         public MappingProfile()
         {
+            //CreateMap<Course, CourseResponse>().ForMember(static x => x.Instructors, static y => y.MapFrom(static z => z.CourseInstructors.Select(static a => a.Instructor)));
             CreateMap<CourseRequest, Course>();
-            CreateMap<Course, CourseResponse>().ForMember(static x => x.Instructors, static y => y.MapFrom(static z => z.CourseInstructors.Select(static a => a.Instructor)));
+            CreateMap<Course, CourseResponse>();
             CreateMap<CommentRequest, Comment>();
             CreateMap<Comment, CommentResponse>();
             CreateMap<Instructor, CourseInstructorResponse>();
             CreateMap<InstructorRequest, Instructor>();
-            CreateMap<InstructorRequest, InstructorResponse>();
+            CreateMap<Instructor, InstructorResponse>();
             CreateMap<PriceRequest, Price>();
             CreateMap<Price, PriceResponse>();
         }
