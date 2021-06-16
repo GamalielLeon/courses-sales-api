@@ -5,10 +5,12 @@ namespace Domain.DTOs.Request
 {
     public class CourseRequest
     {
-        [RequiredField(nameof(Title))]
+        [RequiredField]
+        [StringLengthField(500, 5)]
         public string Title { get; set; }
+        [StringLengthField(1000,10)]
         public string Description { get; set; }
-        [DateRange("2020-01-01","2050-12-31", nameof(PublishingDate))]
+        [RangeField("2020-01-01", "2050-12-31")]
         public DateTime? PublishingDate { get; set; }
         public byte[] ProfilePicture { get; set; }
         public Guid? CreatedBy { get; set; }
