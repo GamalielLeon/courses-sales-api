@@ -5,12 +5,12 @@ namespace Domain.DTOs.Request
 {
     public class PriceRequest
     {
-        [RequiredField(nameof(CourseId))]
+        [RequiredField]
         public Guid? CourseId { get; set; }
-        [RequiredField(nameof(CurrentPrice))]
-        [NumberRange(0,999999, nameof(CurrentPrice))]
+        [RequiredField]
+        [RangeField(0,999999)]
         public decimal? CurrentPrice { get; set; }
-        [NumberRange(0, 999999, nameof(Promotion))]
+        [RangeField(0, 999999)]
         public decimal Promotion { get; set; }
         public Guid? CreatedBy { get; set; }
         public Guid? UpdatedBy { get; set; }

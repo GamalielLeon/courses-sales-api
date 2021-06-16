@@ -1,23 +1,15 @@
 using CoursesSaleAPI.Extensions;
-using CoursesSaleAPI.Helpers.Automapper;
 using CoursesSaleAPI.Helpers.ErrorHandler;
+using CoursesSaleAPI.Helpers.ValidationsHandler;
 using Infrastructure.Data;
 using Infrastructure.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CoursesSaleAPI
 {
@@ -37,7 +29,9 @@ namespace CoursesSaleAPI
             //This works only with the "AutoMapper.Extensions.Microsoft.DependencyInjection" package:
             //services.AddAutoMapper(typeof(MappingProfile));
             services.AddAutoMapper();
-            services.AddControllers();
+            /*Configure a filter for all controllers. This will act as a middleware to validate any request DTO.
+              Then, disable automatic model validations handled by ASP.NET Core.*/
+            services.AddControllers(op => op.Filters.Add(typeof(ValidateRequestDTOs))).ConfigureApiBehaviorOptions(static op => op.SuppressModelStateInvalidFilter = true);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CoursesSaleAPI", Version = "v1" });
