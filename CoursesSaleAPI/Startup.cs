@@ -1,10 +1,12 @@
 using CoursesSaleAPI.Extensions;
 using CoursesSaleAPI.Helpers.ErrorHandler;
 using CoursesSaleAPI.Helpers.ValidationsHandler;
+using Domain.Entities;
 using Infrastructure.Data;
 using Infrastructure.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +34,10 @@ namespace CoursesSaleAPI
             /*Configure a filter for all controllers. This will act as a middleware to validate any request DTO.
               Then, disable automatic model validations handled by ASP.NET Core.*/
             services.AddControllers(op => op.Filters.Add(typeof(ValidateRequestDTOs))).ConfigureApiBehaviorOptions(static op => op.SuppressModelStateInvalidFilter = true);
+
+            services.AddIdentity<User, Role>().AddEntityFrameworkStores<OnlineCoursesContext>().AddSignInManager<SignInManager<User>>();
+            //services.TryAddSingleton<ISystemClock, SystemClock>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CoursesSaleAPI", Version = "v1" });
