@@ -1,0 +1,7 @@
+******************** Located in the following path: "...\CoursesSaleAppCourse\api" to use this commands  ********************
+
+-> To generate a migration: dotnet ef migrations add Initial -p Infrastructure/ -s CoursesSaleAPI/
+-> To remove a migration: dotnet ef migrations remove -p Infrastructure/ -s CoursesSaleAPI/
+-> To update the database: dotnet ef database update -p Infrastructure/ -s CoursesSaleAPI/ -c OnlineCoursesContext
+
+
