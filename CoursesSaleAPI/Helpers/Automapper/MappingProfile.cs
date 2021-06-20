@@ -20,6 +20,9 @@ namespace CoursesSaleAPI.Helpers.Automapper
             CreateMap<Instructor, InstructorResponse>();
             CreateMap<PriceRequest, Price>();
             CreateMap<Price, PriceResponse>();
+            CreateMap<User, LoginResponse>();
+            CreateMap<UserRequest, User>();
+            CreateMap<User, UserResponse>();
         }
     }
 }

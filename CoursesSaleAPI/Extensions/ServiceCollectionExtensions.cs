@@ -10,6 +10,7 @@ namespace CoursesSaleAPI.Extensions
         {
             services.AddScoped(typeof(IServiceGeneric<>), typeof(ServiceGeneric<>));
             services.AddScoped<IServiceCourse, ServiceCourse>();
+            services.AddScoped<IServiceUser, ServiceUser>();
             return services;
         }
     }

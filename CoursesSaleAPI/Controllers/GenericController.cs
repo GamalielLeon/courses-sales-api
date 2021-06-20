@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Domain.Constants;
 using Domain.Contracts.Entity;
 using Domain.Contracts.Service;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ namespace CoursesSaleAPI.Controllers
 {
     public class GenericController<T, TRequest, TResponse> : ControllerBase where T : class, IEntity where TRequest : class where TResponse : class
     {
+        protected readonly Dictionary<string, string> errorDescriptions = ConstantsErrors.ERROR_DESCRIPTIONS;
         protected readonly IServiceGeneric<T> _service;
         protected readonly IMapper _mapper;
         public GenericController(IServiceGeneric<T> service, IMapper mapper)
