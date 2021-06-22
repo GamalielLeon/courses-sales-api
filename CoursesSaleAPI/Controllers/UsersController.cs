@@ -3,6 +3,7 @@ using Domain.Contracts.Service;
 using Domain.DTOs.Request;
 using Domain.DTOs.Response;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -16,10 +17,11 @@ namespace CoursesSaleAPI.Controllers
         {
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponse>> LoginAsync(LoginRequest loginRequest)
         {
-            return Ok(_mapper.Map<LoginResponse>(await ((IServiceUser)_service).LoginAsync(loginRequest)));
+            return Ok(await ((IServiceUser)_service).LoginAsync(loginRequest));
         }
     }
 }
