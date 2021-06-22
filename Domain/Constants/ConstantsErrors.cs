@@ -9,7 +9,10 @@ namespace Domain.Constants
 
         public const string ERROR_HANDLED = "Error handled";
         public const string SERVER_ERROR = "Server error";
+
         public const string BAD_REQUEST = "BadRequest";
+        public const string DUPLICATED_EMAIL = "EmailAlreadyExists";
+        public const string DUPLICATED_USERNAME = "UsernameAlreadyExists";
         public const string VALIDATION_ERROR = "ValidationError";
         public const string UNAUTHORIZED = "Unauthorized";
         public const string NOT_FOUND = "NotFound";
@@ -20,6 +23,8 @@ namespace Domain.Constants
         public static Dictionary<string, string> ERROR_DESCRIPTIONS => new()
         {
             { BAD_REQUEST, "400 Bad Request" },
+            { DUPLICATED_EMAIL, "This email is already registered"},
+            { DUPLICATED_USERNAME, "This username is already registered"},
             { VALIDATION_ERROR, "One or more field validations failed"},
             { UNAUTHORIZED, "Invalid credentials"},
             { NOT_FOUND, "Entity or resource does not exist" },

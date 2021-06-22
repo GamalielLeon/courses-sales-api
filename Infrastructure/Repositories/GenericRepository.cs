@@ -32,6 +32,16 @@ namespace Infrastructure.Repositories
             return entity;
         }
 
+        public virtual bool Any(Expression<Func<T, bool>> predicate)
+        {
+            return _dbSet.Any(predicate);
+        }
+
+        public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.AnyAsync(predicate);
+        }
+
         public virtual void Delete(T entity)
         {
             _dbSet.Remove(entity);

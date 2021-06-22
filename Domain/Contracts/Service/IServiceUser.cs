@@ -7,6 +7,8 @@ namespace Domain.Contracts.Service
 {
     public interface IServiceUser : IServiceGeneric<User>
     {
+        Task<User> AddUserAsync(User user, string password);
         Task<LoginResponse> LoginAsync(LoginRequest loginRequest);
+        string CreateToken(User user);
     }
 }
