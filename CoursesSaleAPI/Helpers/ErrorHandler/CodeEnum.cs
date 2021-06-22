@@ -8,6 +8,7 @@ namespace CoursesSaleAPI.Helpers.ErrorHandler
         Ok204 = HttpStatusCode.NoContent,
         Error400 = HttpStatusCode.BadRequest,
         Error401 = HttpStatusCode.Unauthorized,
+        Error403 = HttpStatusCode.Forbidden,
         Error404 = HttpStatusCode.NotFound,
         Error405 = HttpStatusCode.MethodNotAllowed,
         Error415 = HttpStatusCode.UnsupportedMediaType,
