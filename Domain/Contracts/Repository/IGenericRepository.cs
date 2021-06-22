@@ -10,6 +10,8 @@ namespace Domain.Contracts.Repository
     {
         T Add(T entity);
         Task<T> AddAsync(T entity);
+        bool Any(Expression<Func<T, bool>> predicate);
+        Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
         void Delete(T entity);
         Task DeleteAsync(T entity);
         T FindOne(Expression<Func<T, bool>> predicate);
