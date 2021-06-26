@@ -21,7 +21,7 @@ namespace CoursesSaleAPI.Controllers
             _mapper = mapper;
         }
 
-        protected string TokenFromHeader => Request.Headers.FirstOrDefault(h => h.Key == GlobalConstants.AUTHORIZACION).Value.FirstOrDefault().Split(GlobalConstants.BEARER).LastOrDefault();
+        protected string TokenFromHeader => Request.Headers.FirstOrDefault(static h => h.Key == GlobalConstants.AUTHORIZACION).Value.FirstOrDefault().Split(GlobalConstants.BEARER).LastOrDefault();
 
         [HttpGet]
         public virtual async Task<ActionResult<IEnumerable<TResponse>>> GetAllAsync()

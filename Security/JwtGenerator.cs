@@ -39,9 +39,9 @@ namespace Security
 
         public string GetEmailFromToken(string token)
         {
-            string emailClaim = JwtRegisteredClaimNames.Email;
+            const string emailClaim = JwtRegisteredClaimNames.Email;
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-            return tokenHandler.ReadJwtToken(token).Payload.Claims.FirstOrDefault(c => c.Type == emailClaim).Value;
+            return tokenHandler.ReadJwtToken(token).Payload.Claims.FirstOrDefault(static c => c.Type == emailClaim).Value;
         }
     }
 }
