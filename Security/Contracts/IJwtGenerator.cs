@@ -8,5 +8,6 @@ namespace Security.Contracts
     {
         string CreateToken(User user);
         IEnumerable<Claim> GetClaims(User user);
+        string GetEmailFromToken(string token);
     }
 }
