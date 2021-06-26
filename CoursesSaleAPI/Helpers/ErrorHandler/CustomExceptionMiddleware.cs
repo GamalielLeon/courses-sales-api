@@ -8,7 +8,7 @@ namespace CoursesSaleAPI.Helpers.ErrorHandler
 {
     public class CustomExceptionMiddleware
     {
-        private const string _applicationJson = "application/json";
+        private const string _applicationJson = GlobalConstants.APPLICATION_JSON;
         private readonly RequestDelegate _next;
         private readonly ILogger<CustomExceptionMiddleware> _logger;
         public CustomExceptionMiddleware(RequestDelegate next, ILogger<CustomExceptionMiddleware> logger)

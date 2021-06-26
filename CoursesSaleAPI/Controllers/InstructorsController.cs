@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Domain.Constants;
 using Domain.Contracts.Service;
 using Domain.DTOs.Request;
 using Domain.DTOs.Response;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CoursesSaleAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route(GlobalConstants.GENERIC_ENDPOINT)]
     [ApiController]
     public class InstructorsController : GenericController<Instructor, InstructorRequest, InstructorResponse>
     {

@@ -8,7 +8,7 @@ namespace Domain.Validations.RequestValidations
     public class RangeFieldAttribute : RangeAttribute, IValidation
     {
         private static string MessageError = ConstantsValidations.Errors[ConstantsValidations.RANGE_ERROR];
-        private const string DATE_FORMAT = "yyyy-MM-dd";
+        private const string DATE_FORMAT = GlobalConstants.YYYY_MM_DD;
 
         public RangeFieldAttribute(int minimum, int maximum) : base(minimum, maximum)
         {
