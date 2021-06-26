@@ -9,6 +9,7 @@ namespace Domain.Contracts.Service
     {
         Task<User> AddUserAsync(User user, string password);
         Task<LoginResponse> LoginAsync(LoginRequest loginRequest);
+        Task<User> GetCurrentUserAsync(string token);
         string CreateToken(User user);
     }
 }

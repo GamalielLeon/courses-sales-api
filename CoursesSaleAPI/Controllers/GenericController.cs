@@ -5,6 +5,7 @@ using Domain.Contracts.Service;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CoursesSaleAPI.Controllers
@@ -19,6 +20,8 @@ namespace CoursesSaleAPI.Controllers
             _service = service;
             _mapper = mapper;
         }
+
+        protected string TokenFromHeader => Request.Headers.FirstOrDefault(h => h.Key == GlobalConstants.AUTHORIZACION).Value.FirstOrDefault().Split(GlobalConstants.BEARER).LastOrDefault();
 
         [HttpGet]
         public virtual async Task<ActionResult<IEnumerable<TResponse>>> GetAllAsync()

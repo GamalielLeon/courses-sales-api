@@ -4,6 +4,7 @@ using Security.Constants;
 using Security.Contracts;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 
 namespace Security
@@ -34,6 +35,13 @@ namespace Security
                 new(JwtRegisteredClaimNames.Name, user.FirsName + " " + user.LastName),
                 new(JwtRegisteredClaimNames.Email, user.Email)
             };
+        }
+
+        public string GetEmailFromToken(string token)
+        {
+            string emailClaim = JwtRegisteredClaimNames.Email;
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            return tokenHandler.ReadJwtToken(token).Payload.Claims.FirstOrDefault(c => c.Type == emailClaim).Value;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Domain.Constants;
 using Domain.Contracts.Service;
 using Domain.DTOs.Request;
 using Domain.DTOs.Response;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CoursesSaleAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route(GlobalConstants.GENERIC_ENDPOINT)]
     [ApiController]
     public class UsersController : GenericController<User, UserRequest, UserResponse>
     {
@@ -34,6 +35,12 @@ namespace CoursesSaleAPI.Controllers
             UserCreatedResponse userResponse = _mapper.Map<UserCreatedResponse>(user);
             userResponse.Token = _serviceUser.CreateToken(user);
             return Created("", userResponse);
+        }
+
+        [HttpGet("Current")]
+        public async Task<ActionResult<UserResponse>> GetCurrentUser()
+        {
+            return Ok(_mapper.Map<UserResponse>(await _serviceUser.GetCurrentUserAsync(TokenFromHeader)));
         }
     }
 }

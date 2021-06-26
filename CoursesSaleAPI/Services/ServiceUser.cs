@@ -54,6 +54,12 @@ namespace CoursesSaleAPI.Services
             return new LoginResponse() { Email = user.Email, UserName = user.UserName, Token = CreateToken(user) };
         }
 
+        public async Task<User> GetCurrentUserAsync(string token)
+        {
+            string email = _jwtGenerator.GetEmailFromToken(token);
+            return await _userManager.FindByEmailAsync(email);
+        }
+
         public string CreateToken(User user) => _jwtGenerator.CreateToken(user);
     }
 }
