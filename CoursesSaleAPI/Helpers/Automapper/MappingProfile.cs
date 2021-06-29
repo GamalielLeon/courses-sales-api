@@ -13,6 +13,9 @@ namespace CoursesSaleAPI.Helpers.Automapper
             //CreateMap<Course, CourseResponse>().ForMember(static x => x.Instructors, static y => y.MapFrom(static z => z.CourseInstructors.Select(static a => a.Instructor)));
             CreateMap<CourseRequest, Course>();
             CreateMap<Course, CourseResponse>();
+            CreateMap<Course, CourseView>();
+            CreateMap<CourseWithInstructorsRequest, Course>();
+            CreateMap<CourseInstructorRequest, CourseInstructor>();
             CreateMap<CommentRequest, Comment>();
             CreateMap<Comment, CommentResponse>();
             CreateMap<Instructor, CourseInstructorResponse>();

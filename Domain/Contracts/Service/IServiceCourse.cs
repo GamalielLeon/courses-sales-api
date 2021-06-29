@@ -9,10 +9,8 @@ namespace Domain.Contracts.Service
 {
     public interface IServiceCourse : IServiceGeneric<Course>
     {
-        Course GetWithInstructors(Guid id, params Expression<Func<Course, object>>[] includeProperties);
-        Task<Course> GetWithInstructorsAsync(Guid id, params Expression<Func<Course, object>>[] includeProperties);
-        IQueryable<Course> GetAllWithInstructors(params Expression<Func<Course, object>>[] includeProperties);
-        Task<ICollection<Course>> GetAllWithInstructorsAsync(params Expression<Func<Course, object>>[] includeProperties);
+        Course AddWithInstructors(Course course);
+        Task<Course> AddWithInstructorsAsync(Course course);
         IQueryable<CourseInstructor> GetAllCourseInstructors();
         IQueryable<CourseInstructor> FindByCourseInstructors(Expression<Func<CourseInstructor, bool>> predicate);
     }

@@ -24,25 +24,34 @@ namespace CoursesSaleAPI.Controllers
         }
 
         [HttpGet("CoursesWithInstructors")]
-        public async Task<ActionResult<IEnumerable<CourseResponse>>> GetAllWithInstructorsAsync()
+        public async Task<ActionResult<IEnumerable<CourseView>>> GetAllWithInstructorsAsync()
         {
-            var courses = _mapper.Map<ICollection<CourseResponse>>(await _serviceCourse.GetAllWithInstructorsAsync(static c => c.CourseInstructors));
-            foreach(CourseResponse course in courses)
+            ICollection<CourseView> courses = _mapper.Map<ICollection<CourseView>>(await _service.GetAllAsync());
+            IQueryable<CourseInstructor> courseInstructors = _serviceCourse.GetAllCourseInstructors();
+            foreach (CourseView course in courses)
             {
-                await GetInstructors(from i in _serviceCourse.GetAllCourseInstructors() where i.CourseId == course.Id select i, course);
+                await GetInstructors(from ci in courseInstructors where ci.CourseId == course.Id select ci, course);
             }
             return Ok(courses);
         }
 
         [HttpGet("CoursesWithInstructors/{id}")]
-        public async Task<ActionResult<CourseResponse>> GetWithInstructorsAsync(Guid id)
+        public async Task<ActionResult<CourseView>> GetWithInstructorsAsync(Guid id)
         {
-            var courseResponse = _mapper.Map<CourseResponse>(await _serviceCourse.GetWithInstructorsAsync(id, static c => c.CourseInstructors));
+            CourseView courseResponse = _mapper.Map<CourseView>(await _service.GetAsync(id));
             await GetInstructors(_serviceCourse.FindByCourseInstructors(ci => ci.CourseId == courseResponse.Id), courseResponse);
             return Ok(courseResponse);
         }
 
-        private async Task GetInstructors(IQueryable<CourseInstructor> courseInstructors, CourseResponse courseResponse)
+        [HttpPost("CoursesWithInstructors")]
+        public async Task<ActionResult<CourseView>> PostWithInstructorsAsync([FromBody] CourseWithInstructorsRequest courseRequest)
+        {
+            CourseView courseResponse = _mapper.Map<CourseView>(await _serviceCourse.AddWithInstructorsAsync(_mapper.Map<Course>(courseRequest)));
+            await GetInstructors(_serviceCourse.FindByCourseInstructors(ci => ci.CourseId == courseResponse.Id), courseResponse);
+            return Ok(courseResponse);
+        }
+
+        private async Task GetInstructors(IQueryable<CourseInstructor> courseInstructors, CourseView courseResponse)
         {
             courseResponse.Instructors = _mapper.Map<ICollection<CourseInstructorResponse>>(await courseInstructors.Select(static ci => ci.Instructor).ToListAsync());
         }
