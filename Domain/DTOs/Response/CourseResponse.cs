@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Domain.DTOs.Response
 {
@@ -14,7 +13,5 @@ namespace Domain.DTOs.Response
         public DateTime? UpdatedAt { get; set; }
         public Guid? CreatedBy { get; set; }
         public Guid? UpdatedBy { get; set; }
-
-        public virtual ICollection<CourseInstructorResponse> Instructors { get; set; }
     }
 }
