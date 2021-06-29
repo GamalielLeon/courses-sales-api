@@ -19,7 +19,7 @@ namespace Security
             var tokenDescription = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = ConstantsSecurity.Exp(10, FormatExp.Minutes).ToUniversalTime(), //Expires requires the DateTime in UTC format.
+                Expires = ConstantsSecurity.Exp(30, FormatExp.Minutes).ToUniversalTime(), //Expires requires the DateTime in UTC format.
                 SigningCredentials = credentials
             };
 
