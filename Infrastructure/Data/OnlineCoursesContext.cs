@@ -87,7 +87,7 @@ namespace Infrastructure.Data
             {
                 entity.Property(static e => e.FirstName).IsRequired().HasMaxLength(50);
                 entity.Property(static e => e.LastName).HasMaxLength(50);
-                entity.Property(static e => e.Degree).HasMaxLength(100);
+                entity.Property(static e => e.Degree).IsRequired().HasMaxLength(100);
             });
             GenerateTable<Instructor>(builder);
 
