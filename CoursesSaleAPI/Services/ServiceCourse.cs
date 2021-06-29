@@ -18,24 +18,32 @@ namespace CoursesSaleAPI.Services
             _courseInstructorRepository = courseInstructorRepository;
         }
 
-        public virtual Course GetWithInstructors(Guid id, params Expression<Func<Course, object>>[] includeProperties)
+        public Course AddWithInstructors(Course course)
         {
-            return _repository.GetIncluding(id, includeProperties);
+            Guid[] instructorIds = course.CourseInstructors.Select(static ci => ci.Id).ToArray();
+            ICollection<CourseInstructor> courseInstructors = new List<CourseInstructor>();
+            foreach (Guid instructorId in instructorIds)
+            {
+                courseInstructors.Add(new CourseInstructor() { InstructorId = instructorId });
+            }
+            course.CourseInstructors = courseInstructors;
+            Course courseCreated = _repository.Add(course);
+            _unitOfWork.Save();
+            return courseCreated;
         }
 
-        public virtual async Task<Course> GetWithInstructorsAsync(Guid id, params Expression<Func<Course, object>>[] includeProperties)
+        public async Task<Course> AddWithInstructorsAsync(Course course)
         {
-            return await _repository.GetIncludingAsync(id, includeProperties);
-        }
-
-        public virtual IQueryable<Course> GetAllWithInstructors(params Expression<Func<Course, object>>[] includeProperties)
-        {
-            return _repository.GetAllIncluding(includeProperties);
-        }
-
-        public virtual async Task<ICollection<Course>> GetAllWithInstructorsAsync(params Expression<Func<Course, object>>[] includeProperties)
-        {
-            return await _repository.GetAllIncludingAsync(includeProperties);
+            Guid[] instructorIds = course.CourseInstructors.Select(static ci => ci.Id).ToArray();
+            ICollection<CourseInstructor> courseInstructors = new List<CourseInstructor>();
+            foreach (Guid instructorId in instructorIds)
+            {
+                courseInstructors.Add(new CourseInstructor() { InstructorId = instructorId });
+            }
+            course.CourseInstructors = courseInstructors;
+            Course courseCreated = await _repository.AddAsync(course);
+            await _unitOfWork.SaveAsync();
+            return courseCreated;
         }
 
         public IQueryable<CourseInstructor> GetAllCourseInstructors()
