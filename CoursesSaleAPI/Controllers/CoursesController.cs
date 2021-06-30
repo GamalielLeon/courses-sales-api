@@ -23,7 +23,7 @@ namespace CoursesSaleAPI.Controllers
             _serviceCourse = (IServiceCourse)_service;
         }
 
-        [HttpGet("CoursesWithInstructors")]
+        [HttpGet(GlobalConstants.COURSES_WITH_INSTRUCTORS)]
         public async Task<ActionResult<IEnumerable<CourseView>>> GetAllWithInstructorsAsync()
         {
             ICollection<CourseView> courses = _mapper.Map<ICollection<CourseView>>(await _service.GetAllAsync());
@@ -35,7 +35,7 @@ namespace CoursesSaleAPI.Controllers
             return Ok(courses);
         }
 
-        [HttpGet("CoursesWithInstructors/{id}")]
+        [HttpGet(GlobalConstants.COURSES_WITH_INSTRUCTORS + "/{id}")]
         public async Task<ActionResult<CourseView>> GetWithInstructorsAsync(Guid id)
         {
             CourseView courseResponse = _mapper.Map<CourseView>(await _service.GetAsync(id));
@@ -43,10 +43,18 @@ namespace CoursesSaleAPI.Controllers
             return Ok(courseResponse);
         }
 
-        [HttpPost("CoursesWithInstructors")]
+        [HttpPost(GlobalConstants.COURSES_WITH_INSTRUCTORS)]
         public async Task<ActionResult<CourseView>> PostWithInstructorsAsync([FromBody] CourseWithInstructorsRequest courseRequest)
         {
             CourseView courseResponse = _mapper.Map<CourseView>(await _serviceCourse.AddWithInstructorsAsync(_mapper.Map<Course>(courseRequest)));
+            await GetInstructors(_serviceCourse.FindByCourseInstructors(ci => ci.CourseId == courseResponse.Id), courseResponse);
+            return Ok(courseResponse);
+        }
+
+        [HttpPut(GlobalConstants.COURSES_WITH_INSTRUCTORS + "/{id}")]
+        public async Task<ActionResult<CourseView>> PutWithInstructorsAsync([FromBody] CourseWithInstructorsRequest courseRequest, Guid id)
+        {
+            CourseView courseResponse = _mapper.Map<CourseView>(await _serviceCourse.UpdateWithInstructorsAsync(_mapper.Map<Course>(courseRequest), id));
             await GetInstructors(_serviceCourse.FindByCourseInstructors(ci => ci.CourseId == courseResponse.Id), courseResponse);
             return Ok(courseResponse);
         }

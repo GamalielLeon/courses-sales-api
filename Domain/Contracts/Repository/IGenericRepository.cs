@@ -14,6 +14,8 @@ namespace Domain.Contracts.Repository
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
         void Delete(T entity);
         Task DeleteAsync(T entity);
+        void DeleteRange(IEnumerable<T> entities);
+        Task DeleteRangeAsync(IEnumerable<T> entities);
         T FindOne(Expression<Func<T, bool>> predicate);
         Task<T> FindOneAsync(Expression<Func<T, bool>> predicate);
         IQueryable<T> FindBy(Expression<Func<T, bool>> predicate);

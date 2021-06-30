@@ -52,10 +52,15 @@ namespace Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        //public void DeleteRange(IEnumerable<T> entities)
-        //{
-        //    _table.RemoveRange(entities);
-        //}
+        public void DeleteRange(IEnumerable<T> entities)
+        {
+            _dbSet.RemoveRange(entities);
+        }
+
+        public Task DeleteRangeAsync(IEnumerable<T> entities)
+        {
+            throw new NotImplementedException();
+        }
 
         public virtual T FindOne(Expression<Func<T, bool>> predicate)
         {
