@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Domain.DTOs.Request
 {
-    public class CourseWithInstructorsRequest
+    public class CourseWithInstructorsAndPriceRequest
     {
         [RequiredField]
         [StringLengthField(500, 5)]
@@ -16,6 +16,8 @@ namespace Domain.DTOs.Request
         public byte[] ProfilePicture { get; set; }
         public Guid? CreatedBy { get; set; }
         public Guid? UpdatedBy { get; set; }
+        [RequiredField]
+        public PriceRequest Price { get; set; }
         [RequiredField]
         public ICollection<CourseInstructorRequest> CourseInstructors { get; set; }
     }
