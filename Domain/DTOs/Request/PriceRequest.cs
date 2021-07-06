@@ -5,7 +5,6 @@ namespace Domain.DTOs.Request
 {
     public class PriceRequest
     {
-        [RequiredField]
         public Guid? CourseId { get; set; }
         [RequiredField]
         [RangeField(0,999999)]
