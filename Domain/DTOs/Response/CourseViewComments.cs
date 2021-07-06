@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Domain.DTOs.Response
 {
-    public class CourseView : ICourseInstructors
+    public class CourseViewComments : ICourseInstructors
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
@@ -16,6 +16,7 @@ namespace Domain.DTOs.Response
         public Guid? CreatedBy { get; set; }
         public Guid? UpdatedBy { get; set; }
         public PriceResponse Price { get; set; }
+        public ICollection<CommentResponse> Comments { get; set; }
         public ICollection<CourseInstructorResponse> Instructors { get; set; }
     }
 }

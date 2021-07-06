@@ -14,12 +14,14 @@ namespace CoursesSaleAPI.Services
     public class ServiceCourse : ServiceGeneric<Course>, IServiceCourse
     {
         private readonly IGenericRepository<CourseInstructor> _courseInstructorRepository;
-        public ServiceCourse(IGenericRepository<Course> repository, IUnitOfWork unitOfWork, IGenericRepository<CourseInstructor> courseInstructorRepository) : base(repository, unitOfWork)
+        private readonly IGenericRepository<Price> _priceRepository;
+        public ServiceCourse(IGenericRepository<Course> repository, IUnitOfWork unitOfWork, IGenericRepository<CourseInstructor> courseInstructorRepository, IGenericRepository<Price> priceRepository) : base(repository, unitOfWork)
         {
             _courseInstructorRepository = courseInstructorRepository;
+            _priceRepository = priceRepository;
         }
 
-        public Course AddWithInstructors(Course course)
+        public Course AddWithInstructorsAndPrice(Course course)
         {
             //If an array is not used, an exception is thrown since the collection gets modified at runtime.
             Guid[] instructorIds = course.CourseInstructors.Select(static ci => ci.Id).ToArray();
@@ -36,7 +38,7 @@ namespace CoursesSaleAPI.Services
             return courseCreated;
         }
 
-        public async Task<Course> AddWithInstructorsAsync(Course course)
+        public async Task<Course> AddWithInstructorsAndPriceAsync(Course course)
         {
             //If an array is not used, an exception is thrown since the collection gets modified at runtime.
             Guid[] instructorIds = course.CourseInstructors.Select(static ci => ci.Id).ToArray();
@@ -53,7 +55,7 @@ namespace CoursesSaleAPI.Services
             return courseCreated;
         }
 
-        public Course UpdateWithInstructors(Course course, Guid id)
+        public Course UpdateWithInstructorsAndPrice(Course course, Guid id)
         {
             Course courseOutOfDate = _repository.Get(id);
             if (courseOutOfDate == null)
@@ -78,13 +80,15 @@ namespace CoursesSaleAPI.Services
             course.UpdatedAt = DateTime.Now;
             course.CreatedBy = courseOutOfDate.CreatedBy;
             course.UpdatedBy = courseOutOfDate.UpdatedBy;
+            course.Price = _priceRepository.Update(UpdatePrice(course.Price, courseOutOfDate.Price));
             Course courseUpdated = _repository.Update(course);
             _unitOfWork.Save();
             return courseUpdated;
         }
-        public async Task<Course> UpdateWithInstructorsAsync(Course course, Guid id)
+
+        public async Task<Course> UpdateWithInstructorsAndPriceAsync(Course course, Guid id)
         {
-            Course courseOutOfDate = await _repository.GetAsync(id);
+            Course courseOutOfDate = await _repository.GetIncludingAsync(id, static c => c.Price);
             if (courseOutOfDate == null)
                 throw new CustomException(NOT_FOUND_ERROR, errorDescriptions[NOT_FOUND_ERROR], Code.Error404);
 
@@ -107,6 +111,7 @@ namespace CoursesSaleAPI.Services
             course.UpdatedAt = DateTime.Now;
             course.CreatedBy = courseOutOfDate.CreatedBy;
             course.UpdatedBy = courseOutOfDate.UpdatedBy;
+            course.Price = await _priceRepository.UpdateAsync(UpdatePrice(course.Price, courseOutOfDate.Price));
             Course courseUpdated = await _repository.UpdateAsync(course);
             await _unitOfWork.SaveAsync();
             return courseUpdated;
@@ -120,6 +125,17 @@ namespace CoursesSaleAPI.Services
         public IQueryable<CourseInstructor> FindByCourseInstructors(Expression<Func<CourseInstructor, bool>> predicate)
         {
             return _courseInstructorRepository.FindByIncluding(predicate, static ci => ci.Instructor);
+        }
+
+        private static Price UpdatePrice(Price currentPrice, Price oldPrice)
+        {
+            currentPrice.Id = oldPrice.Id;
+            currentPrice.CourseId = oldPrice.CourseId;
+            currentPrice.CreatedAt = oldPrice.CreatedAt;
+            currentPrice.UpdatedAt = DateTime.Now;
+            currentPrice.CreatedBy = oldPrice.CreatedBy;
+            currentPrice.UpdatedBy = oldPrice.UpdatedBy;
+            return currentPrice;
         }
     }
 }
