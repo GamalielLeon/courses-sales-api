@@ -7,6 +7,7 @@ using Domain.Contracts.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace CoursesSaleAPI.Services
@@ -70,6 +71,18 @@ namespace CoursesSaleAPI.Services
             return entity ?? throw new CustomException(NOT_FOUND_ERROR, errorDescriptions[NOT_FOUND_ERROR], Code.Error404);
         }
 
+        public virtual T GetIncluding(Guid id, params Expression<Func<T, object>>[] includeProperties)
+        {
+            T entity = _repository.GetIncluding(id, includeProperties);
+            return entity ?? throw new CustomException(NOT_FOUND_ERROR, errorDescriptions[NOT_FOUND_ERROR], Code.Error404);
+        }
+
+        public virtual async Task<T> GetIncludingAsync(Guid id, params Expression<Func<T, object>>[] includeProperties)
+        {
+            T entity = await _repository.GetIncludingAsync(id, includeProperties);
+            return entity ?? throw new CustomException(NOT_FOUND_ERROR, errorDescriptions[NOT_FOUND_ERROR], Code.Error404);
+        }
+
         public virtual IQueryable<T> GetAll()
         {
             return _repository.GetAll();
@@ -78,6 +91,16 @@ namespace CoursesSaleAPI.Services
         public virtual async Task<ICollection<T>> GetAllAsync()
         {
             return await _repository.GetAllAsync();
+        }
+
+        public virtual IQueryable<T> GetAllIncluding(params Expression<Func<T, object>>[] includeProperties)
+        {
+            return _repository.GetAllIncluding(includeProperties);
+        }
+
+        public virtual async Task<ICollection<T>> GetAllIncludingAsync(params Expression<Func<T, object>>[] includeProperties)
+        {
+            return await _repository.GetAllIncludingAsync(includeProperties);
         }
 
         public virtual T Update(Guid id, T entity)
