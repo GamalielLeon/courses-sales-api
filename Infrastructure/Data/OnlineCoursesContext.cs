@@ -1,10 +1,10 @@
 ﻿using Domain.Contracts.Entity;
+using Domain.DTOs.Pagination;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Linq;
 
 namespace Infrastructure.Data
 {
@@ -19,6 +19,13 @@ namespace Infrastructure.Data
         public virtual DbSet<CourseInstructor> CourseInstructors { get; set; }
         public virtual DbSet<Instructor> Instructors { get; set; }
         public virtual DbSet<Price> Prices { get; set; }
+
+        //Entities not mapped in the database.
+        public virtual DbSet<CoursesPaged> CoursesPaginated { get; set; }
+        public virtual DbSet<CommentsPaged> CommentsPaginateds { get; set; }
+        public virtual DbSet<InstructorsPaged> InstructorsPaginateds { get; set; }
+        public virtual DbSet<PricesPaged> PricesPaginateds { get; set; }
+        public virtual DbSet<UsersPaged> UsersPaginateds { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -63,7 +70,7 @@ namespace Infrastructure.Data
                 entity.Property(e => e.LastName).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.PhoneNumber).HasMaxLength(10);
             });
-            GenerateTable<User>(builder);
+            ConfigureTable<User>(builder);
 
             builder.Entity<Role>(static entity =>
             {
@@ -72,7 +79,7 @@ namespace Infrastructure.Data
                 entity.HasIndex(static e => e.Name).IsUnique(true);
                 entity.Property(static e => e.Name).IsRequired().HasMaxLength(30);
             });
-            GenerateTable<Role>(builder);
+            ConfigureTable<Role>(builder);
 
             builder.Entity<Course>(static entity =>
             {
@@ -81,7 +88,7 @@ namespace Infrastructure.Data
                 entity.Property(static e => e.Description).HasMaxLength(1000);
                 entity.Property(static e => e.PublishingDate).HasColumnType("DATE");
             });
-            GenerateTable<Course>(builder);
+            ConfigureTable<Course>(builder);
 
             builder.Entity<Instructor>(static entity =>
             {
@@ -89,7 +96,7 @@ namespace Infrastructure.Data
                 entity.Property(static e => e.LastName).HasMaxLength(50);
                 entity.Property(static e => e.Degree).IsRequired().HasMaxLength(100);
             });
-            GenerateTable<Instructor>(builder);
+            ConfigureTable<Instructor>(builder);
 
             builder.Entity<Comment>(static entity =>
             {
@@ -99,14 +106,14 @@ namespace Infrastructure.Data
 
                 entity.HasCheckConstraint($"CK_{nameof(Comment)}_Score", "[Score]>0 AND [Score]<=5");
             });
-            GenerateTable<Comment>(builder);
+            ConfigureTable<Comment>(builder);
 
             builder.Entity<CourseInstructor>(static entity =>
             {
                 entity.Property(static e => e.CourseId).HasColumnType("UNIQUEIDENTIFIER");
                 entity.Property(static e => e.InstructorId).HasColumnType("UNIQUEIDENTIFIER");
             });
-            GenerateTable<CourseInstructor>(builder);
+            ConfigureTable<CourseInstructor>(builder);
 
             builder.Entity<Price>(static entity =>
             {
@@ -117,14 +124,20 @@ namespace Infrastructure.Data
                 entity.HasCheckConstraint($"CK_{nameof(Price)}_CurrentPrice", "[CurrentPrice]>=0");
                 entity.HasCheckConstraint($"CK_{nameof(Price)}_Promotion", "[Promotion]>=0");
             });
-            GenerateTable<Price>(builder);
+            ConfigureTable<Price>(builder);
+
+            ExcludeTable<CoursesPaged>(builder);
+            ExcludeTable<CommentsPaged>(builder);
+            ExcludeTable<InstructorsPaged>(builder);
+            ExcludeTable<PricesPaged>(builder);
+            ExcludeTable<UsersPaged>(builder);
         }
 
-        private static void GenerateTable<T>(ModelBuilder builder, string tableName = null) where T : class, IEntity
+        private static void ConfigureTable<T>(ModelBuilder builder, string tableName = null) where T : class, IEntity, IRowVersion
         {
             builder.Entity<T>(entity =>
             {
-                tableName ??= GetTypeName(entity);
+                tableName ??= GetTypeName<T>();
                 entity.ToTable(tableName);
                 entity.Property(static e => e.Id).HasColumnType("UNIQUEIDENTIFIER ROWGUIDCOL").HasDefaultValueSql("NEWSEQUENTIALID()");
                 //entity.HasOne<User>().WithOne().HasForeignKey<T>(e => e.CreatedBy).HasConstraintName($"FK_{tableName}_Users_CreatedBy");
@@ -137,6 +150,24 @@ namespace Infrastructure.Data
             });
         }
 
-        private static string GetTypeName(object entity) => entity.ToString().Split('.').LastOrDefault().Split(']').FirstOrDefault();
+        public static void ConfigureView<T>(ModelBuilder builder, string viewName = null) where T : class
+        {
+            builder.Entity<T>(viewEntity =>
+            {
+                viewEntity.HasNoKey();
+                viewEntity.ToView(viewName ?? GetTypeName<T>());
+            });
+        }
+
+        private static void ExcludeTable<T>(ModelBuilder builder, string tableName = null) where T : class
+        {
+            builder.Entity<T>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView(null);
+                entity.ToTable(tableName ?? GetTypeName<T>(), static t => t.ExcludeFromMigrations());
+            });
+        }
+        private static string GetTypeName<T>() where T : class => typeof(T).Name;
     }
 }
