@@ -1,10 +1,9 @@
 ﻿using Domain.Contracts.Entity;
 using System;
-using System.Collections.Generic;
 
-namespace Domain.Entities
+namespace Domain.DTOs.Pagination
 {
-    public class Instructor : IEntity, IRowVersion
+    public class InstructorsPaged : IEntity
     {
         public Guid Id { get; set; }
         public string FirstName { get; set; }
@@ -15,8 +14,5 @@ namespace Domain.Entities
         public DateTime? UpdatedAt { get; set; }
         public Guid? CreatedBy { get; set; }
         public Guid? UpdatedBy { get; set; }
-        public byte[] RowVersion { get; set; }
-
-        public virtual ICollection<CourseInstructor> CourseInstructors { get; set; }
     }
 }

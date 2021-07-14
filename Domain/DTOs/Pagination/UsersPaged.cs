@@ -1,18 +1,19 @@
 ﻿using Domain.Contracts.Entity;
-using Microsoft.AspNetCore.Identity;
 using System;
 
-namespace Domain.Entities
+namespace Domain.DTOs.Pagination
 {
-    public class User : IdentityUser<Guid>, IEntity, IRowVersion
+    public class UsersPaged : IEntity
     {
-        //Base class contains: "public Guid Id { get; set; }"
+        public Guid Id { get; set; }
         public string FirsName { get; set; }
         public string LastName { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public Guid? CreatedBy { get; set; }
         public Guid? UpdatedBy { get; set; }
-        public byte[] RowVersion { get; set; }
-}
+    }
 }

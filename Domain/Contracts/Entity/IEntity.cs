@@ -9,6 +9,5 @@ namespace Domain.Contracts.Entity
         public DateTime? UpdatedAt { get; set; }
         public Guid? CreatedBy { get; set; }
         public Guid? UpdatedBy { get; set; }
-        public byte[] RowVersion { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using Domain.Constants;
 using Domain.Contracts.Entity;
 using Domain.Contracts.Service;
+using Domain.DTOs.Pagination;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace CoursesSaleAPI.Controllers
 {
-    public class GenericController<T, TRequest, TResponse> : ControllerBase where T : class, IEntity where TRequest : class where TResponse : class
+    public class GenericController<T, TPaged, TRequest, TResponse> : ControllerBase where T : class, IEntity where TPaged : class where TRequest : class where TResponse : class
     {
         protected readonly Dictionary<string, string> errorDescriptions = ConstantsErrors.ERROR_DESCRIPTIONS;
-        protected readonly IServiceGeneric<T> _service;
+        protected readonly IServiceGeneric<T, TPaged> _service;
         protected readonly IMapper _mapper;
-        public GenericController(IServiceGeneric<T> service, IMapper mapper)
+        public GenericController(IServiceGeneric<T, TPaged> service, IMapper mapper)
         {
             _service = service;
             _mapper = mapper;
@@ -27,6 +28,12 @@ namespace CoursesSaleAPI.Controllers
         public virtual async Task<ActionResult<IEnumerable<TResponse>>> GetAllAsync()
         {
             return Ok(_mapper.Map<IEnumerable<TResponse>>(await _service.GetAllAsync()));
+        }
+
+        [HttpGet("GetPaged")]
+        public virtual async Task<ActionResult<PaginationResponse<TPaged>>> GetAllPagedAsync([FromQuery] PaginationRequest paginationRequest)
+        {
+            return Ok(await _service.GetAllPagedAsync(paginationRequest));
         }
 
         [HttpGet("{id}")]

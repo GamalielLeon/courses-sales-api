@@ -2,6 +2,7 @@
 using Domain.Contracts.Repository;
 using Domain.Contracts.Service;
 using Domain.Contracts.UnitOfWork;
+using Domain.DTOs.Pagination;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace CoursesSaleAPI.Services
 {
-    public class ServiceCourse : ServiceGeneric<Course>, IServiceCourse
+    public class ServiceCourse : ServiceGeneric<Course, CoursesPaged>, IServiceCourse
     {
         private readonly IGenericRepository<CourseInstructor> _courseInstructorRepository;
         private readonly IGenericRepository<Price> _priceRepository;
-        public ServiceCourse(IGenericRepository<Course> repository, IUnitOfWork unitOfWork, IGenericRepository<CourseInstructor> courseInstructorRepository, IGenericRepository<Price> priceRepository) : base(repository, unitOfWork)
+        public ServiceCourse(IGenericRepository<CoursesPaged> pagedRepository, IGenericRepository<Course> repository, IUnitOfWork unitOfWork, IGenericRepository<CourseInstructor> courseInstructorRepository, IGenericRepository<Price> priceRepository) : base(pagedRepository, repository, unitOfWork)
         {
             _courseInstructorRepository = courseInstructorRepository;
             _priceRepository = priceRepository;

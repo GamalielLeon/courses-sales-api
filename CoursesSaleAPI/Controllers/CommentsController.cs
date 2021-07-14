@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Contracts.Service;
+using Domain.DTOs.Pagination;
 using Domain.DTOs.Request;
 using Domain.DTOs.Response;
 using Domain.Entities;
@@ -9,9 +10,9 @@ namespace CoursesSaleAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CommentsController : GenericController<Comment, CommentRequest, CommentResponse>
+    public class CommentsController : GenericController<Comment, CommentsPaged, CommentRequest, CommentResponse>
     {
-        public CommentsController(IServiceGeneric<Comment> service, IMapper mapper) : base(service, mapper)
+        public CommentsController(IServiceGeneric<Comment, CommentsPaged> service, IMapper mapper) : base(service, mapper)
         {
         }
     }

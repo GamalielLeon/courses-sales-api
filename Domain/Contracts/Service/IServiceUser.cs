@@ -1,11 +1,12 @@
-﻿using Domain.DTOs.Request;
+﻿using Domain.DTOs.Pagination;
+using Domain.DTOs.Request;
 using Domain.DTOs.Response;
 using Domain.Entities;
 using System.Threading.Tasks;
 
 namespace Domain.Contracts.Service
 {
-    public interface IServiceUser : IServiceGeneric<User>
+    public interface IServiceUser : IServiceGeneric<User, UsersPaged>
     {
         Task<User> AddUserAsync(User user, string password);
         Task<LoginResponse> LoginAsync(LoginRequest loginRequest);

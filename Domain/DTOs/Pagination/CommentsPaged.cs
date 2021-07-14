@@ -1,9 +1,9 @@
 ﻿using Domain.Contracts.Entity;
 using System;
 
-namespace Domain.Entities
+namespace Domain.DTOs.Pagination
 {
-    public class Comment : IEntity, IRowVersion
+    public class CommentsPaged : IEntity
     {
         public Guid Id { get; set; }
         public Guid CourseId { get; set; }
@@ -14,8 +14,5 @@ namespace Domain.Entities
         public DateTime? UpdatedAt { get; set; }
         public Guid? CreatedBy { get; set; }
         public Guid? UpdatedBy { get; set; }
-        public byte[] RowVersion { get; set; }
-
-        public virtual Course Course { get; set; }
     }
 }

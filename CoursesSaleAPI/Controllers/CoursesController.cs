@@ -2,6 +2,7 @@
 using Domain.Constants;
 using Domain.Contracts.Entity;
 using Domain.Contracts.Service;
+using Domain.DTOs.Pagination;
 using Domain.DTOs.Request;
 using Domain.DTOs.Response;
 using Domain.Entities;
@@ -16,7 +17,7 @@ namespace CoursesSaleAPI.Controllers
 {
     [Route(GlobalConstants.GENERIC_ENDPOINT)]
     [ApiController]
-    public class CoursesController : GenericController<Course, CourseRequest, CourseResponse>
+    public class CoursesController : GenericController<Course, CoursesPaged, CourseRequest, CourseResponse>
     {
         private readonly IServiceCourse _serviceCourse;
         public CoursesController(IServiceCourse service, IMapper mapper) : base(service, mapper)

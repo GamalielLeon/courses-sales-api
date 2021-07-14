@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.DTOs.Pagination;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -12,6 +13,8 @@ namespace Domain.Contracts.Repository
         Task<T> AddAsync(T entity);
         bool Any(Expression<Func<T, bool>> predicate);
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
+        long CountRecords();
+        Task<long> CountRecordsAsync();
         void Delete(T entity);
         Task DeleteAsync(T entity);
         void DeleteRange(IEnumerable<T> entities);
@@ -26,6 +29,8 @@ namespace Domain.Contracts.Repository
         Task<T> GetAsync(Guid id);
         IQueryable<T> GetAll();
         Task<ICollection<T>> GetAllAsync();
+        IQueryable<T> GetAllPaged(PaginationRequest paginationRequest);
+        Task<ICollection<T>> GetAllPagedAsync(PaginationRequest paginationRequest);
         T GetIncluding(Guid id, params Expression<Func<T, object>>[] includeProperties);
         Task<T> GetIncludingAsync(Guid id, params Expression<Func<T, object>>[] includeProperties);
         IQueryable<T> GetAllIncluding(params Expression<Func<T, object>>[] includeProperties);

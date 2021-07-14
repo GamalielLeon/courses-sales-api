@@ -4,7 +4,7 @@ using System;
 
 namespace Domain.Entities
 {
-    public class Role : IdentityRole<Guid>, IEntity
+    public class Role : IdentityRole<Guid>, IEntity, IRowVersion
     {
         //Base class contains: "public Guid Id { get; set; }"
         public string Code { get; set; }
