@@ -4,6 +4,7 @@ using Domain.Contracts.Entity;
 using Domain.Contracts.Repository;
 using Domain.Contracts.Service;
 using Domain.Contracts.UnitOfWork;
+using Domain.DTOs.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,15 +13,17 @@ using System.Threading.Tasks;
 
 namespace CoursesSaleAPI.Services
 {
-    public class ServiceGeneric<T> : IServiceGeneric<T> where T : class, IEntity
+    public class ServiceGeneric<T, TPaged> : IServiceGeneric<T, TPaged> where T : class, IEntity where TPaged : class
     {
         protected readonly Dictionary<string, string> errorDescriptions = ConstantsErrors.ERROR_DESCRIPTIONS;
         protected const string NOT_FOUND_ERROR = ConstantsErrors.NOT_FOUND;
+        protected readonly IGenericRepository<TPaged> _pagedRepository;
         protected readonly IGenericRepository<T> _repository;
         protected readonly IUnitOfWork _unitOfWork;
         
-        public ServiceGeneric(IGenericRepository<T> repository, IUnitOfWork unitOfWork)
+        public ServiceGeneric(IGenericRepository<TPaged> pagedRepository, IGenericRepository<T> repository, IUnitOfWork unitOfWork)
         {
+            _pagedRepository = pagedRepository;
             _repository = repository;
             _unitOfWork = unitOfWork;
         }
@@ -101,6 +104,38 @@ namespace CoursesSaleAPI.Services
         public virtual async Task<ICollection<T>> GetAllIncludingAsync(params Expression<Func<T, object>>[] includeProperties)
         {
             return await _repository.GetAllIncludingAsync(includeProperties);
+        }
+
+        public virtual PaginationResponse<TPaged> GetAllPaged(PaginationRequest paginationRequest)
+        {
+            if (paginationRequest.Page * paginationRequest.PageSize > _repository.CountRecords())
+                throw new CustomException("A", "", Code.Error400);
+            if (typeof(T).GetProperties().Select(p => p.Name).Contains(paginationRequest.SortBy))
+                throw new CustomException("B", "", Code.Error400);
+
+            PaginationResponse<TPaged> paginationResponse = new PaginationResponse<TPaged>();
+            paginationResponse.Results = _pagedRepository.GetAllPaged(paginationRequest).ToList();
+            paginationResponse.CurrentPage = paginationRequest.Page;
+            paginationResponse.PageSize = paginationRequest.PageSize;
+            paginationResponse.TotalRecords = _repository.CountRecords();
+            paginationResponse.TotalPages = (long)Math.Ceiling((decimal)paginationResponse.TotalRecords / paginationResponse.PageSize);
+            return paginationResponse;
+        }
+
+        public virtual async Task<PaginationResponse<TPaged>> GetAllPagedAsync(PaginationRequest paginationRequest)
+        {
+            if ((paginationRequest.Page - 1) * paginationRequest.PageSize >= await _repository.CountRecordsAsync())
+                throw new CustomException("PaginationError", "Number of requested records exceeds database records", Code.Error400);
+            if (!typeof(T).GetProperties().Select(p => p.Name.ToLower()).Contains(paginationRequest.SortBy.ToLower()))
+                throw new CustomException("PropertyError", $"{paginationRequest.SortBy} property was not found", Code.Error400);
+
+            PaginationResponse<TPaged> paginationResponse = new PaginationResponse<TPaged>();
+            paginationResponse.Results = await _pagedRepository.GetAllPagedAsync(paginationRequest);
+            paginationResponse.CurrentPage = paginationRequest.Page;
+            paginationResponse.PageSize = paginationRequest.PageSize;
+            paginationResponse.TotalRecords = await _repository.CountRecordsAsync();
+            paginationResponse.TotalPages = (long)Math.Ceiling((decimal)paginationResponse.TotalRecords / paginationResponse.PageSize);
+            return paginationResponse;
         }
 
         public virtual T Update(Guid id, T entity)
