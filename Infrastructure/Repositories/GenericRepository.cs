@@ -1,5 +1,6 @@
 ﻿using Domain.Contracts.Entity;
 using Domain.Contracts.Repository;
+using Domain.DTOs.Pagination;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -40,6 +41,16 @@ namespace Infrastructure.Repositories
         public virtual async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
         {
             return await _dbSet.AnyAsync(predicate);
+        }
+
+        public long CountRecords()
+        {
+            return _dbSet.LongCount();
+        }
+
+        public async Task<long> CountRecordsAsync()
+        {
+            return await _dbSet.LongCountAsync();
         }
 
         public virtual void Delete(T entity)
@@ -110,6 +121,20 @@ namespace Infrastructure.Repositories
         public virtual async Task<ICollection<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
+        }
+
+        public virtual IQueryable<T> GetAllPaged(PaginationRequest paginationRequest)
+        {
+            string parameters = $"@Page = {paginationRequest.Page}, @PageSize = {paginationRequest.PageSize}";
+            parameters += $", @SortBy = {paginationRequest.SortBy}, @IsSortDescendent = {paginationRequest.IsSortDescendent}";
+            return _dbSet.FromSqlRaw($"SP_{typeof(T).Name} {parameters}");
+        }
+
+        public virtual async Task<ICollection<T>> GetAllPagedAsync(PaginationRequest paginationRequest)
+        {
+            string parameters = $"@Page = {paginationRequest.Page}, @PageSize = {paginationRequest.PageSize}";
+            parameters += $", @SortBy = {paginationRequest.SortBy}, @IsSortDescendent = {paginationRequest.IsSortDescendent}";
+            return await _dbSet.FromSqlRaw($"SP_{typeof(T).Name} {parameters}").ToListAsync();
         }
 
         public virtual T GetIncluding(Guid id, params Expression<Func<T, object>>[] includeProperties)
