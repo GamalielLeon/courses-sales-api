@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Domain.Entities
 {
-    public class Course : IEntity
+    public class Course : IEntity, IRowVersion
     {
         public Guid Id { get; set; }
         public string Title { get; set; }

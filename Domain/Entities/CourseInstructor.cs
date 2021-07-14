@@ -3,7 +3,7 @@ using System;
 
 namespace Domain.Entities
 {
-    public class CourseInstructor : IEntity
+    public class CourseInstructor : IEntity, IRowVersion
     {
         public Guid Id { get; set; }
         public Guid CourseId { get; set; }

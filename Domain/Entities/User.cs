@@ -4,7 +4,7 @@ using System;
 
 namespace Domain.Entities
 {
-    public class User : IdentityUser<Guid>, IEntity
+    public class User : IdentityUser<Guid>, IEntity, IRowVersion
     {
         //Base class contains: "public Guid Id { get; set; }"
         public string FirsName { get; set; }
