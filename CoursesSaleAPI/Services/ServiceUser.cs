@@ -3,6 +3,7 @@ using Domain.Constants;
 using Domain.Contracts.Repository;
 using Domain.Contracts.Service;
 using Domain.Contracts.UnitOfWork;
+using Domain.DTOs.Pagination;
 using Domain.DTOs.Request;
 using Domain.DTOs.Response;
 using Domain.Entities;
@@ -14,14 +15,14 @@ using System.Threading.Tasks;
 
 namespace CoursesSaleAPI.Services
 {
-    public class ServiceUser : ServiceGeneric<User>, IServiceUser
+    public class ServiceUser : ServiceGeneric<User, UsersPaged>, IServiceUser
     {
         private readonly IJwtGenerator _jwtGenerator;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private const string UNAUTHORIZED_ERROR = ConstantsErrors.UNAUTHORIZED;
 
-        public ServiceUser(IGenericRepository<User> repository, IUnitOfWork unitOfWork, UserManager<User> userManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator) : base(repository, unitOfWork)
+        public ServiceUser(IGenericRepository<UsersPaged> pagedRepository, IGenericRepository<User> repository, IUnitOfWork unitOfWork, UserManager<User> userManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator) : base(pagedRepository, repository, unitOfWork)
         {
             _userManager = userManager;
             _signInManager = signInManager;
