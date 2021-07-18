@@ -50,7 +50,10 @@ namespace CoursesSaleAPI
             }).ConfigureApiBehaviorOptions(static opt => opt.SuppressModelStateInvalidFilter = true);
 
             //Add and configure AspNetCore.Identity.
-            services.AddIdentity<User, Role>().AddEntityFrameworkStores<OnlineCoursesContext>().AddSignInManager<SignInManager<User>>();
+            services.AddIdentity<User, Role>()
+                .AddEntityFrameworkStores<OnlineCoursesContext>()
+                .AddSignInManager<SignInManager<User>>()
+                .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<User, Role>>();
 
             //Add a class in charge of generating JWT.
             services.AddScoped<IJwtGenerator, JwtGenerator>();

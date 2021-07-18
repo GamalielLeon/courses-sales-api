@@ -21,11 +21,13 @@ namespace Infrastructure.Data
         public virtual DbSet<Price> Prices { get; set; }
 
         //Entities not mapped in the database.
-        public virtual DbSet<CoursesPaged> CoursesPaginated { get; set; }
-        public virtual DbSet<CommentsPaged> CommentsPaginateds { get; set; }
-        public virtual DbSet<InstructorsPaged> InstructorsPaginateds { get; set; }
-        public virtual DbSet<PricesPaged> PricesPaginateds { get; set; }
-        public virtual DbSet<UsersPaged> UsersPaginateds { get; set; }
+        public virtual DbSet<CoursesPaged> CoursesPageds { get; set; }
+        public virtual DbSet<CommentsPaged> CommentsPaged { get; set; }
+        public virtual DbSet<InstructorsPaged> InstructorsPaged { get; set; }
+        public virtual DbSet<PricesPaged> PricesPaged { get; set; }
+        public virtual DbSet<RolesPaged> RolesPaged { get; set; }
+        public virtual DbSet<UsersPaged> UsersPaged { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -131,6 +133,7 @@ namespace Infrastructure.Data
             ExcludeTable<InstructorsPaged>(builder);
             ExcludeTable<PricesPaged>(builder);
             ExcludeTable<UsersPaged>(builder);
+            ExcludeTable<RolesPaged>(builder);
         }
 
         private static void ConfigureTable<T>(ModelBuilder builder, string tableName = null) where T : class, IEntity, IRowVersion
