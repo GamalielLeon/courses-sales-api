@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Contracts.Service
 {
-    public interface IServiceUser : IServiceGeneric<User, UsersPaged>
+    public interface IServiceUser : IServiceGeneric<User>
     {
         Task<User> AddUserAsync(User user, string password);
         Task<LoginResponse> LoginAsync(LoginRequest loginRequest);

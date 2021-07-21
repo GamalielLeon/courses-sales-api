@@ -3,7 +3,6 @@ using Domain.Constants;
 using Domain.Contracts.Repository;
 using Domain.Contracts.Service;
 using Domain.Contracts.UnitOfWork;
-using Domain.DTOs.Pagination;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -12,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace CoursesSaleAPI.Services
 {
-    public class ServiceRole : ServiceGeneric<Role, RolesPaged>, IServiceRole
+    public class ServiceRole : ServiceGeneric<Role>, IServiceRole
     {
         private readonly RoleManager<Role> _roleManager;
 
-        public ServiceRole(IGenericRepository<RolesPaged> pagedRepository, IGenericRepository<Role> repository, IUnitOfWork unitOfWork, RoleManager<Role> roleManager) : base(pagedRepository, repository, unitOfWork)
+        public ServiceRole(RoleManager<Role> roleManager, IGenericRepository<Role> repository, IUnitOfWork unitOfWork) : base(repository, unitOfWork)
         {
             _roleManager = roleManager;
         }
