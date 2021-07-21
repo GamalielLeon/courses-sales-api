@@ -17,10 +17,10 @@ namespace CoursesSaleAPI.Controllers
 {
     [Route(GlobalConstants.GENERIC_ENDPOINT)]
     [ApiController]
-    public class CoursesController : GenericController<Course, CoursesPaged, CourseRequest, CourseResponse>
+    public class CoursesController : PaginationController<Course, CoursesPaged, CourseRequest, CourseResponse>
     {
         private readonly IServiceCourse _serviceCourse;
-        public CoursesController(IServiceCourse service, IMapper mapper) : base(service, mapper)
+        public CoursesController(IPaginationService<CoursesPaged> paginationService, IServiceCourse service, IMapper mapper) : base(paginationService, service, mapper)
         {
             _serviceCourse = (IServiceCourse)_service;
         }

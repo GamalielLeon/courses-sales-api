@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Constants;
 using Domain.Contracts.Service;
-using Domain.DTOs.Pagination;
 using Domain.DTOs.Request;
 using Domain.DTOs.Response;
 using Domain.Entities;
@@ -12,7 +11,7 @@ namespace CoursesSaleAPI.Controllers
 {
     [Route(GlobalConstants.GENERIC_ENDPOINT)]
     [ApiController]
-    public class RolesController : GenericController<Role, RolesPaged, RoleRequest, RoleResponse>
+    public class RolesController : GenericController<Role, RoleRequest, RoleResponse>
     {
         private readonly IServiceRole _serviceRole;
         public RolesController(IServiceRole service, IMapper mapper) : base(service, mapper)

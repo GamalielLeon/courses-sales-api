@@ -11,9 +11,9 @@ namespace CoursesSaleAPI.Controllers
 {
     [Route(GlobalConstants.GENERIC_ENDPOINT)]
     [ApiController]
-    public class InstructorsController : GenericController<Instructor, InstructorsPaged,InstructorRequest, InstructorResponse>
+    public class InstructorsController : PaginationController<Instructor, InstructorsPaged,InstructorRequest, InstructorResponse>
     {
-        public InstructorsController(IServiceGeneric<Instructor, InstructorsPaged> service, IMapper mapper) : base(service, mapper)
+        public InstructorsController(IPaginationService<InstructorsPaged> paginationService, IServiceGeneric<Instructor> service, IMapper mapper) : base(paginationService, service, mapper)
         {
         }
     }
