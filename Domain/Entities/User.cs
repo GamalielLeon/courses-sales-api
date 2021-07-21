@@ -7,7 +7,7 @@ namespace Domain.Entities
     public class User : IdentityUser<Guid>, IEntity, IRowVersion
     {
         //Base class contains: "public Guid Id { get; set; }"
-        public string FirsName { get; set; }
+        public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

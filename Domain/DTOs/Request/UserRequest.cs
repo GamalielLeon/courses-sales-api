@@ -6,7 +6,7 @@ namespace Domain.DTOs.Request
     {
         [RequiredField]
         [StringLengthField(50, 3)]
-        public string FirsName { get; set; }
+        public string FirstName { get; set; }
         [RequiredField]
         [StringLengthField(50, 3)]
         public string LastName { get; set; }
