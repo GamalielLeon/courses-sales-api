@@ -24,9 +24,9 @@ namespace CoursesSaleAPI.Services
         public override async Task<Role> AddAsync(Role role)
         {
             //If code or name sent already exists, return a 400 error.
-            if (await _repository.AnyAsync(r => r.Name.ToLower() == role.Name.ToLower()))
+            if (await _repository.AnyAsync(r => r.NormalizedName == role.Name.ToUpper()))
                 throw new CustomException(ConstantsErrors.DUPLICATED_NAME, errorDescriptions[ConstantsErrors.DUPLICATED_NAME]);
-            if (await _repository.AnyAsync(r => r.Code.ToLower() == role.Code.ToLower()))
+            if (await _repository.AnyAsync(r => r.Code.ToUpper() == role.Code.ToUpper()))
                 throw new CustomException(ConstantsErrors.DUPLICATED_CODE, errorDescriptions[ConstantsErrors.DUPLICATED_CODE]);
             role.CreatedAt = DateTime.Now;
             //If save was succeded, return the role created, otherwise return a 500 error.

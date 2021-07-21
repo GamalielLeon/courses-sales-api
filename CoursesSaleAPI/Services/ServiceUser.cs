@@ -32,16 +32,16 @@ namespace CoursesSaleAPI.Services
         public async Task<User> AddUserAsync(User user, string password)
         {
             //If email or username sent already exists, return a 400 error.
-            if (await _repository.AnyAsync(u => u.Email == user.Email))
+            if (await _repository.AnyAsync(u => u.NormalizedEmail == user.Email.ToUpper()))
                 throw new CustomException(ConstantsErrors.DUPLICATED_EMAIL, errorDescriptions[ConstantsErrors.DUPLICATED_EMAIL]);
-            if (await _repository.AnyAsync(u => u.UserName == user.UserName))
+            if (await _repository.AnyAsync(u => u.NormalizedUserName == user.UserName.ToUpper()))
                 throw new CustomException(ConstantsErrors.DUPLICATED_USERNAME, errorDescriptions[ConstantsErrors.DUPLICATED_USERNAME]);
             user.CreatedAt = DateTime.Now;
             //If save was succeded, return the user created, otherwise return a 400 error.
             IdentityResult result = await _userManager.CreateAsync(user, password);
             if (result.Succeeded) return await _userManager.FindByEmailAsync(user.Email);
             IdentityError error = result.Errors.First();
-            throw new CustomException(error.Code, error.Description, Code.Error400);
+            throw new CustomException(error.Code, error.Description, Code.Error500);
         }
 
         public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest)
