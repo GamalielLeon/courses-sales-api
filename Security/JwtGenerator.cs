@@ -32,7 +32,7 @@ namespace Security
             return new List<Claim>()
             {
                 new(JwtRegisteredClaimNames.Iss, ConstantsSecurity.ISS),
-                new(JwtRegisteredClaimNames.Name, user.FirsName + " " + user.LastName),
+                new(JwtRegisteredClaimNames.Name, user.FirstName + " " + user.LastName),
                 new(JwtRegisteredClaimNames.Email, user.Email)
             };
         }

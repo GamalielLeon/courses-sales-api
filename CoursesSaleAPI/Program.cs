@@ -19,7 +19,7 @@ namespace CoursesSaleAPI
                 var userManager = services.GetRequiredService<UserManager<User>>();
                 if (!userManager.Users.Any())
                 {
-                    var user = new User { FirsName = "Admin", LastName = "User", UserName = "adminuser", Email = "admin.user@users.com" };
+                    var user = new User { FirstName = "Admin", LastName = "User", UserName = "adminuser", Email = "admin.user@users.com" };
                     userManager.CreateAsync(user, "Password1.").Wait();
                 }
             }

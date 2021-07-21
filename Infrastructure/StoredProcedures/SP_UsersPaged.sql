@@ -11,7 +11,7 @@ BEGIN
 	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 
 	SELECT U.[Id]
-	, U.[FirsName]
+	, U.[FirstName]
 	, U.[LastName]
 	, U.[UserName]
 	, U.[Email]
