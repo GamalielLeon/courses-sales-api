@@ -22,23 +22,6 @@ namespace CoursesSaleAPI.Services
             _priceRepository = priceRepository;
         }
 
-        public Course AddWithInstructorsAndPrice(Course course)
-        {
-            //If an array is not used, an exception is thrown since the collection gets modified at runtime.
-            Guid[] instructorIds = course.CourseInstructors.Select(static ci => ci.Id).ToArray();
-            ICollection<CourseInstructor> courseInstructors = new List<CourseInstructor>();
-            foreach (Guid instructorId in instructorIds)
-            {
-                courseInstructors.Add(new CourseInstructor() { InstructorId = instructorId });
-            }
-
-            course.CreatedAt = DateTime.Now;
-            course.CourseInstructors = courseInstructors;
-            Course courseCreated = _repository.Add(course);
-            _unitOfWork.Save();
-            return courseCreated;
-        }
-
         public async Task<Course> AddWithInstructorsAndPriceAsync(Course course)
         {
             //If an array is not used, an exception is thrown since the collection gets modified at runtime.
@@ -54,37 +37,6 @@ namespace CoursesSaleAPI.Services
             Course courseCreated = await _repository.AddAsync(course);
             await _unitOfWork.SaveAsync();
             return courseCreated;
-        }
-
-        public Course UpdateWithInstructorsAndPrice(Course course, Guid id)
-        {
-            Course courseOutOfDate = _repository.Get(id);
-            if (courseOutOfDate == null)
-                throw new CustomException(NOT_FOUND_ERROR, errorDescriptions[NOT_FOUND_ERROR], Code.Error404);
-
-            //Get the sets to add and delete.
-            IEnumerable<Guid> instructorIdsRequest = course.CourseInstructors.Select(static cir => cir.Id);
-            //IQueryable<T> is used for performance reasons.
-            IQueryable<CourseInstructor> instructors = _courseInstructorRepository.FindBy(ci => ci.CourseId == id);
-            IQueryable<CourseInstructor> instructorsToDelete = instructors.Where(ci => !instructorIdsRequest.Contains(ci.InstructorId));
-            //If an array is not used, an exception is thrown since the collection gets modified at runtime.
-            Guid[] instructorIdsToAdd = instructorIdsRequest.Except(instructors.Select(static i => i.InstructorId)).ToArray();
-
-            _courseInstructorRepository.DeleteRange(instructorsToDelete);
-            foreach (Guid instructorId in instructorIdsToAdd)
-            {
-                _courseInstructorRepository.Add(new CourseInstructor() { CourseId = id, InstructorId = instructorId });
-            }
-
-            course.Id = courseOutOfDate.Id;
-            course.CreatedAt = courseOutOfDate.CreatedAt;
-            course.UpdatedAt = DateTime.Now;
-            course.CreatedBy = courseOutOfDate.CreatedBy;
-            course.UpdatedBy = courseOutOfDate.UpdatedBy;
-            course.Price = _priceRepository.Update(UpdatePrice(course.Price, courseOutOfDate.Price));
-            Course courseUpdated = _repository.Update(course);
-            _unitOfWork.Save();
-            return courseUpdated;
         }
 
         public async Task<Course> UpdateWithInstructorsAndPriceAsync(Course course, Guid id)
