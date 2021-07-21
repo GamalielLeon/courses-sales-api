@@ -68,7 +68,7 @@ namespace Infrastructure.Data
                 entity.HasIndex(e => e.UserName).IsUnique(true);
                 entity.Property(e => e.UserName).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.PasswordHash).HasMaxLength(128);
-                entity.Property(e => e.FirsName).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.FirstName).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.LastName).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.PhoneNumber).HasMaxLength(10);
             });
