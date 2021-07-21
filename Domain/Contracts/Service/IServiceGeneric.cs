@@ -1,4 +1,4 @@
-﻿using Domain.DTOs.Pagination;
+﻿using Domain.Contracts.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace Domain.Contracts.Service
 {
-    public interface IServiceGeneric<T, TPaginated> where T : class where TPaginated : class
+    public interface IServiceGeneric<T> where T : class, IEntity
     {
         T Add(T entity);
         Task<T> AddAsync(T entity);
+        long CountRecords();
+        Task<long> CountRecordsAsync();
         void Delete(Guid id);
         Task DeleteAsync(Guid id);
         T Get(Guid id);
@@ -21,8 +23,6 @@ namespace Domain.Contracts.Service
         Task<ICollection<T>> GetAllAsync();
         IQueryable<T> GetAllIncluding(params Expression<Func<T, object>>[] includeProperties);
         Task<ICollection<T>> GetAllIncludingAsync(params Expression<Func<T, object>>[] includeProperties);
-        PaginationResponse<TPaginated> GetAllPaged(PaginationRequest paginationRequest);
-        Task<PaginationResponse<TPaginated>> GetAllPagedAsync(PaginationRequest paginationRequest);
         T Update(Guid id, T entity);
         Task<T> UpdateAsync(Guid id, T entity);
     }

@@ -13,10 +13,10 @@ namespace CoursesSaleAPI.Controllers
 {
     [Route(GlobalConstants.GENERIC_ENDPOINT)]
     [ApiController]
-    public class UsersController : GenericController<User, UsersPaged, UserRequest, UserResponse>
+    public class UsersController : PaginationController<User, UsersPaged, UserRequest, UserResponse>
     {
         private readonly IServiceUser _serviceUser;
-        public UsersController(IServiceUser service, IMapper mapper) : base(service, mapper)
+        public UsersController(IPaginationService<UsersPaged> paginationService, IServiceUser service, IMapper mapper) : base(paginationService, service, mapper)
         {
             _serviceUser = (IServiceUser)_service;
         }
