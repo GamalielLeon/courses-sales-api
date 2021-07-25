@@ -4,6 +4,7 @@ using Domain.Contracts.Entity;
 using Domain.Contracts.Repository;
 using Domain.Contracts.Service;
 using Domain.Contracts.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,20 +26,46 @@ namespace CoursesSaleAPI.Services
             _unitOfWork = unitOfWork;
         }
 
+        //Returns a CustomException if the 'ex' passed was yielded due to a duplicate value. Otherwise, returns the original 'ex'.
+        protected Exception CheckExceptionforDuplicateValue(DbUpdateException ex, string entityName)
+        {
+            Exception exception = ex.InnerException;
+            if (exception.Message.Contains("duplicate key"))
+            {
+                string duplicateField = exception.Message.Split($"IX_{entityName}_").LastOrDefault().Split("'.").FirstOrDefault();
+                return new CustomException(ConstantsErrors.DUPLICATE_VALUE, $"This {duplicateField} already exists");
+            }
+            return ex;
+        }
+
         public virtual T Add(T entity)
         {
-            entity.CreatedAt = DateTime.Now;
-            T entityCreated = _repository.Add(entity);
-            _unitOfWork.Save();
-            return entityCreated;
+            try
+            {
+                entity.CreatedAt = DateTime.Now;
+                T entityCreated = _repository.Add(entity);
+                _unitOfWork.Save();
+                return entityCreated;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw CheckExceptionforDuplicateValue(ex, typeof(T).Name);
+            }
         }
 
         public virtual async Task<T> AddAsync(T entity)
         {
-            entity.CreatedAt = DateTime.Now;
-            T entityCreated = await _repository.AddAsync(entity);
-            await _unitOfWork.SaveAsync();
-            return entityCreated;
+            try
+            {
+                entity.CreatedAt = DateTime.Now;
+                T entityCreated = await _repository.AddAsync(entity);
+                await _unitOfWork.SaveAsync();
+                return entityCreated;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw CheckExceptionforDuplicateValue(ex, typeof(T).Name);
+            }
         }
 
         public virtual long CountRecords()
@@ -125,9 +152,16 @@ namespace CoursesSaleAPI.Services
             entity.CreatedBy = entityOutOfDate.CreatedBy;
             entity.UpdatedBy = entityOutOfDate.UpdatedBy;
 
-            T entityUpdated = _repository.Update(entity);
-            _unitOfWork.Save();
-            return entityUpdated;
+            try
+            {
+                T entityUpdated = _repository.Update(entity);
+                _unitOfWork.Save();
+                return entityUpdated;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw CheckExceptionforDuplicateValue(ex, typeof(T).Name);
+            }
         }
 
         public virtual async Task<T> UpdateAsync(Guid id, T entity)
@@ -142,9 +176,16 @@ namespace CoursesSaleAPI.Services
             entity.CreatedBy = entityOutOfDate.CreatedBy;
             entity.UpdatedBy = entityOutOfDate.UpdatedBy;
 
-            T entityUpdated = await _repository.UpdateAsync(entity);
-            await _unitOfWork.SaveAsync();
-            return entityUpdated;
+            try
+            {
+                T entityUpdated = await _repository.UpdateAsync(entity);
+                await _unitOfWork.SaveAsync();
+                return entityUpdated;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw CheckExceptionforDuplicateValue(ex, typeof(T).Name);
+            }
         }
     }
 }

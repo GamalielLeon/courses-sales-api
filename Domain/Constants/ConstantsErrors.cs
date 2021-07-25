@@ -11,10 +11,11 @@ namespace Domain.Constants
         public const string SERVER_ERROR = "Server error";
 
         public const string BAD_REQUEST = "BadRequest";
-        public const string DUPLICATED_EMAIL = "EmailAlreadyExists";
-        public const string DUPLICATED_USERNAME = "UsernameAlreadyExists";
-        public const string DUPLICATED_CODE = "CodeAlreadyExists";
-        public const string DUPLICATED_NAME = "NameAlreadyExists";
+        public const string DUPLICATE_EMAIL = "EmailAlreadyExists";
+        public const string DUPLICATE_USERNAME = "UsernameAlreadyExists";
+        public const string DUPLICATE_CODE = "CodeAlreadyExists";
+        public const string DUPLICATE_NAME = "NameAlreadyExists";
+        public const string DUPLICATE_VALUE = "DuplicateValue";
         public const string VALIDATION_ERROR = "ValidationError";
         public const string EXCEEDED_RECORDS = "ExceededRecords";
         public const string PROPERTY_ERROR = "PropertyError";
@@ -27,10 +28,10 @@ namespace Domain.Constants
         public static Dictionary<string, string> ERROR_DESCRIPTIONS => new()
         {
             { BAD_REQUEST, "400 Bad Request" },
-            { DUPLICATED_EMAIL, "This email is already registered"},
-            { DUPLICATED_USERNAME, "This username is already registered"},
-            { DUPLICATED_CODE, "This code is already registered" },
-            { DUPLICATED_NAME, "This name is already registered" },
+            { DUPLICATE_EMAIL, "This email is already registered"},
+            { DUPLICATE_USERNAME, "This username is already registered"},
+            { DUPLICATE_CODE, "This code is already registered" },
+            { DUPLICATE_NAME, "This name is already registered" },
             { VALIDATION_ERROR, "One or more field validations failed"},
             { EXCEEDED_RECORDS, "Number of requested records exceeds database records" },
             { PROPERTY_ERROR, "Property was not found"},
