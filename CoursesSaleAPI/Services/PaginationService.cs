@@ -1,4 +1,5 @@
 ﻿using CoursesSaleAPI.Helpers.ErrorHandler;
+using Domain.Constants;
 using Domain.Contracts.Entity;
 using Domain.Contracts.Repository;
 using Domain.Contracts.Service;
@@ -20,9 +21,9 @@ namespace CoursesSaleAPI.Services
         public virtual PaginationResponse<TPaged> GetAllPaged(PaginationRequest paginationRequest, Func<long> currentRecords)
         {
             if (paginationRequest.Page * paginationRequest.PageSize > currentRecords())
-                throw new CustomException("PaginationError", "Number of requested records exceeds database records");
+                throw new CustomException(ConstantsErrors.EXCEEDED_RECORDS, errorDescriptions[ConstantsErrors.EXCEEDED_RECORDS]);
             if (typeof(TPaged).GetProperties().Select(p => p.Name).Contains(paginationRequest.SortBy))
-                throw new CustomException("PropertyError", $"{paginationRequest.SortBy} property was not found");
+                throw new CustomException(ConstantsErrors.PROPERTY_ERROR, $"{paginationRequest.SortBy} property was not found");
 
             PaginationResponse<TPaged> paginationResponse = new PaginationResponse<TPaged>();
             paginationResponse.Results = _pagedRepository.GetAllPaged(paginationRequest).ToList();
@@ -36,9 +37,9 @@ namespace CoursesSaleAPI.Services
         public virtual async Task<PaginationResponse<TPaged>> GetAllPagedAsync(PaginationRequest paginationRequest, Func<Task<long>> currentRecords)
         {
             if ((paginationRequest.Page - 1) * paginationRequest.PageSize >= await currentRecords())
-                throw new CustomException("PaginationError", "Number of requested records exceeds database records");
+                throw new CustomException(ConstantsErrors.EXCEEDED_RECORDS, errorDescriptions[ConstantsErrors.EXCEEDED_RECORDS]);
             if (!typeof(TPaged).GetProperties().Select(p => p.Name.ToLower()).Contains(paginationRequest.SortBy.ToLower()))
-                throw new CustomException("PropertyError", $"{paginationRequest.SortBy} property was not found");
+                throw new CustomException(ConstantsErrors.PROPERTY_ERROR, $"{paginationRequest.SortBy} property was not found");
 
             PaginationResponse<TPaged> paginationResponse = new PaginationResponse<TPaged>();
             paginationResponse.Results = await _pagedRepository.GetAllPagedAsync(paginationRequest);
