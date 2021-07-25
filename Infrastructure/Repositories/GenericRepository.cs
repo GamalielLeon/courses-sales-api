@@ -127,14 +127,14 @@ namespace Infrastructure.Repositories
         {
             string parameters = $"@Page = {paginationRequest.Page}, @PageSize = {paginationRequest.PageSize}";
             parameters += $", @SortBy = {paginationRequest.SortBy}, @IsSortDescendent = {paginationRequest.IsSortDescendent}";
-            return _dbSet.FromSqlRaw($"SP_{typeof(T).Name} {parameters}");
+            return _dbSet.FromSqlRaw($"usp_{typeof(T).Name} {parameters}");
         }
 
         public virtual async Task<ICollection<T>> GetAllPagedAsync(PaginationRequest paginationRequest)
         {
             string parameters = $"@Page = {paginationRequest.Page}, @PageSize = {paginationRequest.PageSize}";
             parameters += $", @SortBy = {paginationRequest.SortBy}, @IsSortDescendent = {paginationRequest.IsSortDescendent}";
-            return await _dbSet.FromSqlRaw($"SP_{typeof(T).Name} {parameters}").ToListAsync();
+            return await _dbSet.FromSqlRaw($"usp_{typeof(T).Name} {parameters}").ToListAsync();
         }
 
         public virtual T GetIncluding(Guid id, params Expression<Func<T, object>>[] includeProperties)
