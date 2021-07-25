@@ -24,9 +24,9 @@ namespace CoursesSaleAPI.Services
         {
             //If code or name sent already exists, return a 400 error.
             if (await _repository.AnyAsync(r => r.NormalizedName == role.Name.ToUpper()))
-                throw new CustomException(ConstantsErrors.DUPLICATED_NAME, errorDescriptions[ConstantsErrors.DUPLICATED_NAME]);
+                throw new CustomException(ConstantsErrors.DUPLICATE_NAME, errorDescriptions[ConstantsErrors.DUPLICATE_NAME]);
             if (await _repository.AnyAsync(r => r.Code.ToUpper() == role.Code.ToUpper()))
-                throw new CustomException(ConstantsErrors.DUPLICATED_CODE, errorDescriptions[ConstantsErrors.DUPLICATED_CODE]);
+                throw new CustomException(ConstantsErrors.DUPLICATE_CODE, errorDescriptions[ConstantsErrors.DUPLICATE_CODE]);
             role.CreatedAt = DateTime.Now;
             //If save was succeded, return the role created, otherwise return a 500 error.
             IdentityResult result = await _roleManager.CreateAsync(role);
