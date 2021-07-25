@@ -3,6 +3,7 @@ using Domain.Contracts.Repository;
 using Domain.Contracts.Service;
 using Domain.Contracts.UnitOfWork;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,9 +34,17 @@ namespace CoursesSaleAPI.Services
 
             course.CreatedAt = DateTime.Now;
             course.CourseInstructors = courseInstructors;
-            Course courseCreated = await _repository.AddAsync(course);
-            await _unitOfWork.SaveAsync();
-            return courseCreated;
+
+            try
+            {
+                Course courseCreated = await _repository.AddAsync(course);
+                await _unitOfWork.SaveAsync();
+                return courseCreated;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw CheckExceptionforDuplicateValue(ex, nameof(Course));
+            }
         }
 
         public async Task<Course> UpdateWithInstructorsAndPriceAsync(Course course, Guid id)
@@ -63,10 +72,18 @@ namespace CoursesSaleAPI.Services
             course.UpdatedAt = DateTime.Now;
             course.CreatedBy = courseOutOfDate.CreatedBy;
             course.UpdatedBy = courseOutOfDate.UpdatedBy;
-            course.Price = await _priceRepository.UpdateAsync(UpdatePrice(course.Price, courseOutOfDate.Price));
-            Course courseUpdated = await _repository.UpdateAsync(course);
-            await _unitOfWork.SaveAsync();
-            return courseUpdated;
+            course.Price = await _priceRepository.UpdateAsync(SetDefaultPropertiesOfPrice(course.Price, courseOutOfDate.Price));
+            
+            try
+            {
+                Course courseUpdated = await _repository.UpdateAsync(course);
+                await _unitOfWork.SaveAsync();
+                return courseUpdated;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw CheckExceptionforDuplicateValue(ex, nameof(Course));
+            }
         }
 
         public IQueryable<CourseInstructor> GetAllCourseInstructors()
@@ -79,7 +96,7 @@ namespace CoursesSaleAPI.Services
             return _courseInstructorRepository.FindByIncluding(predicate, static ci => ci.Instructor);
         }
 
-        private static Price UpdatePrice(Price currentPrice, Price oldPrice)
+        private static Price SetDefaultPropertiesOfPrice(Price currentPrice, Price oldPrice)
         {
             currentPrice.Id = oldPrice.Id;
             currentPrice.CourseId = oldPrice.CourseId;
