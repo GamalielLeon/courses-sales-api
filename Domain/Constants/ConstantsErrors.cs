@@ -16,6 +16,8 @@ namespace Domain.Constants
         public const string DUPLICATED_CODE = "CodeAlreadyExists";
         public const string DUPLICATED_NAME = "NameAlreadyExists";
         public const string VALIDATION_ERROR = "ValidationError";
+        public const string EXCEEDED_RECORDS = "ExceededRecords";
+        public const string PROPERTY_ERROR = "PropertyError";
         public const string UNAUTHORIZED = "Unauthorized";
         public const string NOT_FOUND = "NotFound";
         public const string UNSUPPORTED_MEDIA_TYPE = "UnsupportedMediaType"; 
@@ -30,6 +32,8 @@ namespace Domain.Constants
             { DUPLICATED_CODE, "This code is already registered" },
             { DUPLICATED_NAME, "This name is already registered" },
             { VALIDATION_ERROR, "One or more field validations failed"},
+            { EXCEEDED_RECORDS, "Number of requested records exceeds database records" },
+            { PROPERTY_ERROR, "Property was not found"},
             { UNAUTHORIZED, "Invalid credentials"},
             { NOT_FOUND, "Entity or resource does not exist" },
             { UNSUPPORTED_MEDIA_TYPE , "Unsupported Media Type" },
