@@ -1,4 +1,4 @@
-CREATE PROCEDURE dbo.[SP_InstructorsPaged]
+CREATE OR ALTER PROCEDURE dbo.[usp_InstructorsPaged]
 	@Page INT = 1
 	, @PageSize INT = 10
 	, @SortBy VARCHAR(100) = 'id'

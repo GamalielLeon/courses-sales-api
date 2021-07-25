@@ -1,4 +1,4 @@
-CREATE PROCEDURE dbo.[SP_UsersPaged]
+CREATE OR ALTER PROCEDURE dbo.[usp_UsersPaged]
 	@Page INT = 1
 	, @PageSize INT = 10
 	, @SortBy VARCHAR(100) = 'id'
@@ -24,7 +24,7 @@ BEGIN
 	ORDER BY
 		CASE WHEN @IsSortDescendent = 1 THEN
 			CASE
-				WHEN @SortBy = 'firstname' THEN U.[FirsName]
+				WHEN @SortBy = 'firstname' THEN U.[FirstName]
 				WHEN @SortBy = 'lastname' THEN U.[LastName]
 				WHEN @SortBy = 'username' THEN U.[UserName]
 				WHEN @SortBy = 'email' THEN U.[Email]
@@ -36,7 +36,7 @@ BEGIN
 		END DESC,
 		CASE WHEN @IsSortDescendent = 0 THEN
 			CASE
-				WHEN @SortBy = 'firstname' THEN U.[FirsName]
+				WHEN @SortBy = 'firstname' THEN U.[FirstName]
 				WHEN @SortBy = 'lastname' THEN U.[LastName]
 				WHEN @SortBy = 'username' THEN U.[UserName]
 				WHEN @SortBy = 'email' THEN U.[Email]
