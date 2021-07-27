@@ -25,22 +25,17 @@ namespace CoursesSaleAPI.Services
 
         public async Task<User> AddRolesToUserAsync(UserRoleRequest userRoleRequest)
         {
-            User user = await _userRepository.FindOneIncludingAsync(u => u.NormalizedUserName == userRoleRequest.UserName, static u => u.UserRoles);
-            if (user == null) throw new CustomException("UserNotFound", "This username does not exist", Code.Error404);
-
+            User user = await GetUserByUsernameWithRolesAsync(userRoleRequest.UserName);
             string[] roleCodes = userRoleRequest.RoleCodes.ToArray();
             int roleCodesLength = roleCodes.Length;
-            if (roleCodesLength == 0) throw new CustomException("EmptyRoleCodes", "RoleCodes field must not be null or empty");
 
+            if (roleCodesLength == 0) throw new CustomException("EmptyRoleCodes", "RoleCodes field must not be null or empty");
             if (roleCodes.Distinct().Count() != roleCodesLength)
                 throw new CustomException("RoleCodesDuplicate", "One or more role codes are duplicated");
             if (roleCodesLength > 5 || roleCodesLength > await _roleRepository.CountRecordsAsync())
-                throw new CustomException("ExceededRoles", "The number or roles is greater than 5 or greater than the number of roles in the database");
+                throw new CustomException("ExceededRoles", "RoleCodes length is greater than 5 or greater than the number of roles in the database");
 
-            IQueryable<Guid> roleIdsMatched = _roleRepository.GetAll().Where(r => roleCodes.Contains(r.Code)).Select(static r => r.Id);
-            if (await roleIdsMatched.CountAsync() != roleCodesLength)
-                throw new CustomException("RoleNotFound", "One or more roles were not found", Code.Error404);
-
+            IQueryable<Guid> roleIdsMatched = await GetRoleIdsMatchedAsync(roleCodes);
             if (user.UserRoles.Select(static ur => ur.RoleId).Intersect(roleIdsMatched).Any())
                 throw new CustomException("RoleAlreadyExists", "This user already has one or more of the submitted roles");
 
@@ -67,7 +62,46 @@ namespace CoursesSaleAPI.Services
 
         public async Task<User> RemoveRolesFromUserAsync(UserRoleRequest userRoleRequest)
         {
-            return null;
+            User user = await GetUserByUsernameWithRolesAsync(userRoleRequest.UserName);
+            Guid[] userRoles = user.UserRoles.Select(static ur => ur.RoleId).ToArray();
+            string[] roleCodes = userRoleRequest.RoleCodes.ToArray();
+            int roleCodesLength = roleCodes.Length;
+
+            if (userRoles.Length == 0) throw new CustomException("NoRolesFound", "This user has no roles");
+            if (roleCodesLength == 0 || roleCodesLength > userRoles.Length)
+                throw new CustomException("RoleCodesLengthError", $"RoleCodes length must be greater than 0 and less than or equal to {userRoles.Length}");
+            if (roleCodes.Distinct().Count() != roleCodesLength)
+                throw new CustomException("RoleCodesDuplicate", "One or more role codes are duplicated");
+            
+            IQueryable<Guid> roleIdsMatched = await GetRoleIdsMatchedAsync(roleCodes);
+            if (userRoles.Intersect(roleIdsMatched).Count() != roleCodesLength)
+                throw new CustomException("RoleNotMatch", "This user does not have one or more of the submitted roles");
+
+            try
+            {
+                _repository.DeleteRange(await _repository.FindByAsync(ur => ur.UserId == user.Id && roleIdsMatched.Contains(ur.RoleId)));
+                await _unitOfWork.SaveAsync();
+                return user;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw CheckExceptionforDuplicateValue(ex, nameof(Course));
+            }
+        }
+
+        private async Task<User> GetUserByUsernameWithRolesAsync(string username)
+        {
+            User user =  await _userRepository.FindOneIncludingAsync(u => u.NormalizedUserName == username, static u => u.UserRoles);
+            if (user == null) throw new CustomException("UserNotFound", "This username does not exist", Code.Error404);
+            return user;
+        }
+
+        private async Task<IQueryable<Guid>> GetRoleIdsMatchedAsync(string[] roleCodes)
+        {
+            IQueryable<Guid> roleIdsMatched = _roleRepository.FindBy(r => roleCodes.Contains(r.Code)).Select(static r => r.Id);
+            if (await roleIdsMatched.CountAsync() != roleCodes.Length)
+                throw new CustomException("RoleNotFound", "One or more roles were not found", Code.Error404);
+            return roleIdsMatched;
         }
     }
 }
