@@ -13,6 +13,7 @@ namespace CoursesSaleAPI.Extensions
             services.AddScoped<IServiceCourse, ServiceCourse>();
             services.AddScoped<IServiceUser, ServiceUser>();
             services.AddScoped<IServiceRole, ServiceRole>();
+            services.AddScoped<IServiceUserRole, ServiceUserRole>();
             return services;
         }
     }
