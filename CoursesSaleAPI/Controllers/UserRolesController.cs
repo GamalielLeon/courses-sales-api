@@ -32,7 +32,10 @@ namespace CoursesSaleAPI.Controllers
         [HttpDelete("RemoveRolesFromUser")]
         public async Task<ActionResult<UserRoleResponse>> RemoveRolesFromUserAsync([FromBody] UserRoleRequest userRoleRequest)
         {
-            return Ok(await _serviceUserRole.RemoveRolesFromUserAsync(userRoleRequest));
+            UserRoleResponse userWithRoles = new UserRoleResponse();
+            userWithRoles.User = _mapper.Map<UserResponse>(await _serviceUserRole.RemoveRolesFromUserAsync(userRoleRequest));
+            userWithRoles.Roles = _mapper.Map<IEnumerable<RoleResponse>>(await _serviceUserRole.GetUserRolesAsync(ur => ur.UserId == userWithRoles.User.Id));
+            return Ok(userWithRoles);
         }
     }
 }
