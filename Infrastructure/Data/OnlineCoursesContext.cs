@@ -8,7 +8,7 @@ using System;
 
 namespace Infrastructure.Data
 {
-    public class OnlineCoursesContext : IdentityDbContext<User, Role, Guid>
+    public class OnlineCoursesContext : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>, UserRole, IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
     {
         public OnlineCoursesContext(DbContextOptions<OnlineCoursesContext> options) : base(options)
         {
@@ -32,12 +32,6 @@ namespace Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            builder.Entity<IdentityUserRole<Guid>>(static entity =>
-            {
-                entity.Property(e => e.RoleId).HasColumnType("UNIQUEIDENTIFIER");
-                entity.Property(e => e.UserId).HasColumnType("UNIQUEIDENTIFIER");
-            });
 
             builder.Entity<IdentityUserClaim<Guid>>(static entity =>
             {
@@ -63,6 +57,8 @@ namespace Infrastructure.Data
 
             builder.Entity<User>(static entity =>
             {
+                //Overrides the default configuration of the "UserId" property to make it a foreign key.
+                entity.HasMany(e => e.UserRoles).WithOne(e => e.User).HasForeignKey(e => e.UserId).HasConstraintName($"FK_UserRole_User_UserId");
                 entity.HasIndex(e => e.Email).IsUnique(true);
                 entity.Property(e => e.Email).IsRequired().HasMaxLength(50);
                 entity.HasIndex(e => e.UserName).IsUnique(true);
@@ -76,12 +72,23 @@ namespace Infrastructure.Data
 
             builder.Entity<Role>(static entity =>
             {
+                //Overrides the default configuration of the "RoleId" property to make it a foreign key.
+                entity.HasMany(e => e.UserRoles).WithOne(e => e.Role).HasForeignKey(e => e.RoleId).HasConstraintName($"FK_UserRole_Role_RoleId");
                 entity.HasIndex(static e => e.Code).IsUnique(true);
                 entity.Property(static e => e.Code).IsRequired().HasMaxLength(10);
                 entity.HasIndex(static e => e.Name).IsUnique(true);
                 entity.Property(static e => e.Name).IsRequired().HasMaxLength(30);
             });
             ConfigureTable<Role>(builder);
+
+            builder.Entity<UserRole>(static entity =>
+            {
+                //Override the default primary key: new {e.UserId, e.RoleId}.
+                entity.HasKey(e => new { e.Id });
+                entity.Property(e => e.RoleId).HasColumnType("UNIQUEIDENTIFIER");
+                entity.Property(e => e.UserId).HasColumnType("UNIQUEIDENTIFIER");
+            });
+            ConfigureTable<UserRole>(builder);
 
             builder.Entity<Course>(static entity =>
             {
