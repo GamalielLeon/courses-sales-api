@@ -1,6 +1,7 @@
 ﻿using Domain.Contracts.Entity;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
 
 namespace Domain.Entities
 {
@@ -13,5 +14,7 @@ namespace Domain.Entities
         public Guid? CreatedBy { get; set; }
         public Guid? UpdatedBy { get; set; }
         public byte[] RowVersion { get; set; }
+
+        public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 }

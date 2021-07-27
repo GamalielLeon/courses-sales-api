@@ -20,7 +20,9 @@ namespace Domain.Contracts.Repository
         void DeleteRange(IEnumerable<T> entities);
         Task DeleteRangeAsync(IEnumerable<T> entities);
         T FindOne(Expression<Func<T, bool>> predicate);
+        T FindOneIncluding(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
         Task<T> FindOneAsync(Expression<Func<T, bool>> predicate);
+        Task<T> FindOneIncludingAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
         IQueryable<T> FindBy(Expression<Func<T, bool>> predicate);
         Task<ICollection<T>> FindByAsync(Expression<Func<T, bool>> predicate);
         IQueryable<T> FindByIncluding(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);

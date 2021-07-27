@@ -43,12 +43,12 @@ namespace Infrastructure.Repositories
             return await _dbSet.AnyAsync(predicate);
         }
 
-        public long CountRecords()
+        public virtual long CountRecords()
         {
             return _dbSet.LongCount();
         }
 
-        public async Task<long> CountRecordsAsync()
+        public virtual async Task<long> CountRecordsAsync()
         {
             return await _dbSet.LongCountAsync();
         }
@@ -58,17 +58,17 @@ namespace Infrastructure.Repositories
             _dbSet.Remove(entity);
         }
 
-        public Task DeleteAsync(T entity)
+        public virtual Task DeleteAsync(T entity)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteRange(IEnumerable<T> entities)
+        public virtual void DeleteRange(IEnumerable<T> entities)
         {
             _dbSet.RemoveRange(entities);
         }
 
-        public Task DeleteRangeAsync(IEnumerable<T> entities)
+        public virtual Task DeleteRangeAsync(IEnumerable<T> entities)
         {
             throw new NotImplementedException();
         }
@@ -78,9 +78,19 @@ namespace Infrastructure.Repositories
             return _dbSet.FirstOrDefault(predicate);
         }
 
+        public virtual T FindOneIncluding(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties)
+        {
+            return FindByIncluding(predicate, includeProperties).FirstOrDefault();
+        }
+
         public virtual async Task<T> FindOneAsync(Expression<Func<T, bool>> predicate)
         {
             return await _dbSet.FirstOrDefaultAsync(predicate);
+        }
+
+        public virtual async Task<T> FindOneIncludingAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties)
+        {
+            return await FindByIncluding(predicate, includeProperties).FirstOrDefaultAsync();
         }
 
         public virtual IQueryable<T> FindBy(Expression<Func<T, bool>> predicate)
@@ -139,12 +149,12 @@ namespace Infrastructure.Repositories
 
         public virtual T GetIncluding(Guid id, params Expression<Func<T, object>>[] includeProperties)
         {
-            return FindByIncluding(e => e.Id == id, includeProperties).FirstOrDefault();
+            return FindOneIncluding(e => e.Id == id, includeProperties);
         }
 
         public virtual async Task<T> GetIncludingAsync(Guid id, params Expression<Func<T, object>>[] includeProperties)
         {
-            return await FindByIncluding(e => e.Id == id, includeProperties).FirstOrDefaultAsync();
+            return await FindOneIncludingAsync(e => e.Id == id, includeProperties);
         }
 
         public virtual IQueryable<T> GetAllIncluding(params Expression<Func<T, object>>[] includeProperties)
