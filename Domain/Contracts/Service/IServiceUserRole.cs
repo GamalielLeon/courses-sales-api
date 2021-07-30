@@ -10,6 +10,8 @@ namespace Domain.Contracts.Service
     public interface IServiceUserRole : IServiceGeneric<UserRole>
     {
         Task<User> AddRolesToUserAsync(UserRoleRequest userRoleRequest);
+        Task<ICollection<User>> GetUsersAsync();
+        Task<User> GetUserByIdOrUserNameAsync(object parameter);
         Task<IEnumerable<Role>> GetUserRolesAsync(Expression<Func<UserRole, bool>> predicate);
         Task<User> RemoveRolesFromUserAsync(UserRoleRequest userRoleRequest);
     }
