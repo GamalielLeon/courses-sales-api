@@ -57,7 +57,7 @@ namespace CoursesSaleAPI.Services
 
         public async Task<IEnumerable<Role>> GetUserRolesAsync(Expression<Func<UserRole, bool>> predicate)
         {
-            return (await _repository.FindByIncludingAsync(predicate, static ur => ur.Role)).Select(static ur => ur.Role);
+            return await (_repository.FindByIncluding(predicate, static ur => ur.Role).Select(static ur => ur.Role)).ToListAsync();
         }
 
         public async Task<User> RemoveRolesFromUserAsync(UserRoleRequest userRoleRequest)
@@ -87,6 +87,23 @@ namespace CoursesSaleAPI.Services
             {
                 throw CheckExceptionforDuplicateValue(ex, nameof(Course));
             }
+        }
+
+        public async Task<ICollection<User>> GetUsersAsync()
+        {
+            return await _userRepository.GetAllAsync();
+        }
+
+        public async Task<User> GetUserByIdOrUserNameAsync(object parameter)
+        {
+            User user = null;
+            if (parameter.GetType().Name == nameof(String))
+                user = await _userRepository.FindOneAsync(u => u.NormalizedUserName == ((string)parameter).ToUpper());
+            if (parameter.GetType().Name == nameof(Guid))
+                user = await _userRepository.GetAsync((Guid)parameter);
+            if (user == null)
+                throw new CustomException(NOT_FOUND_ERROR, errorDescriptions[NOT_FOUND_ERROR], Code.Error404);
+            return user;
         }
 
         private async Task<User> GetUserByUsernameWithRolesAsync(string username)
