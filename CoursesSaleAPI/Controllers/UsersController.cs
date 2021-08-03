@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace CoursesSaleAPI.Controllers
 {
+    [Authorize(Roles = GlobalConstants.ROLES_ALLOWED_FOR_INSTRUCTORS_CONTROLLER)]
     [Route(GlobalConstants.GENERIC_ENDPOINT)]
     [ApiController]
     public class UsersController : PaginationController<User, UsersPaged, UserRequest, UserResponse>
@@ -22,7 +23,7 @@ namespace CoursesSaleAPI.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("login")]
+        [HttpPost("token")]
         public async Task<ActionResult<LoginResponse>> LoginAsync(LoginRequest loginRequest)
         {
             return Ok(await _serviceUser.LoginAsync(loginRequest));
@@ -38,6 +39,7 @@ namespace CoursesSaleAPI.Controllers
             return Created("", userResponse);
         }
 
+        [Authorize(Roles = GlobalConstants.USER_ROLE)]
         [HttpGet("Current")]
         public async Task<ActionResult<UserResponse>> GetCurrentUser()
         {

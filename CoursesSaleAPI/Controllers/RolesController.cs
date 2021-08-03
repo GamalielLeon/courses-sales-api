@@ -4,11 +4,13 @@ using Domain.Contracts.Service;
 using Domain.DTOs.Request;
 using Domain.DTOs.Response;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace CoursesSaleAPI.Controllers
 {
+    [Authorize(Roles = GlobalConstants.ROLES_ALLOWED_FOR_ROLES_CONTROLLER)]
     [Route(GlobalConstants.GENERIC_ENDPOINT)]
     [ApiController]
     public class RolesController : GenericController<Role, RoleRequest, RoleResponse>

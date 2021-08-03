@@ -6,6 +6,7 @@ using Domain.DTOs.Pagination;
 using Domain.DTOs.Request;
 using Domain.DTOs.Response;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace CoursesSaleAPI.Controllers
 {
+    [Authorize(Roles = GlobalConstants.ROLES_ALLOWED_FOR_COURSES_CONTROLLER)]
     [Route(GlobalConstants.GENERIC_ENDPOINT)]
     [ApiController]
     public class CoursesController : PaginationController<Course, CoursesPaged, CourseRequest, CourseResponse>
