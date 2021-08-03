@@ -17,15 +17,17 @@ namespace CoursesSaleAPI.Services
     public class ServiceUser : ServiceGeneric<User>, IServiceUser
     {
         private readonly IJwtGenerator _jwtGenerator;
+        private readonly IServiceUserRole _serviceUserRole;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private const string UNAUTHORIZED_ERROR = ConstantsErrors.UNAUTHORIZED;
 
-        public ServiceUser(UserManager<User> userManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator, IGenericRepository<User> repository, IUnitOfWork unitOfWork) : base(repository, unitOfWork)
+        public ServiceUser(IServiceUserRole serviceUserRole, UserManager<User> userManager, SignInManager<User> signInManager, IJwtGenerator jwtGenerator, IGenericRepository<User> repository, IUnitOfWork unitOfWork) : base(repository, unitOfWork)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtGenerator = jwtGenerator;
+            _serviceUserRole = serviceUserRole;
         }
 
         public async Task<User> AddUserAsync(User user, string password)
@@ -51,7 +53,8 @@ namespace CoursesSaleAPI.Services
             //Check if password sent in the request matches with the password registered.
             if (!(await _signInManager.CheckPasswordSignInAsync(user, loginRequest.Password, false)).Succeeded)
                 throw new CustomException(UNAUTHORIZED_ERROR, errorDescriptions[UNAUTHORIZED_ERROR], Code.Error401);
-            return new LoginResponse() { Email = user.Email, UserName = user.UserName, Token = CreateToken(user) };
+            var roleCodes = (await _serviceUserRole.GetUserRolesAsync(ur => ur.UserId == user.Id)).Select(static r => r.Code);
+            return new LoginResponse() { Email = user.Email, UserName = user.UserName, Token = CreateToken(user, roleCodes.ToArray()) };
         }
 
         public async Task<User> GetCurrentUserAsync(string token)
@@ -60,6 +63,6 @@ namespace CoursesSaleAPI.Services
             return await _userManager.FindByEmailAsync(email);
         }
 
-        public string CreateToken(User user) => _jwtGenerator.CreateToken(user);
+        public string CreateToken(User user, string[] roles = null) => _jwtGenerator.CreateToken(user, roles);
     }
 }

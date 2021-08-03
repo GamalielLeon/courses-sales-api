@@ -11,15 +11,19 @@ namespace Security
 {
     public class JwtGenerator : IJwtGenerator
     {
-        public string CreateToken(User user)
+        public string CreateToken(User user, string[] roles = null)
         {
-            IEnumerable<Claim> claims = GetClaims(user);
+            IList<Claim> claims = GetClaims(user).ToList();
             SigningCredentials credentials = new(ConstantsSecurity.Key, ConstantsSecurity.ALGORITHM);
+
+            // Add role codes to the "role" claim, as an array.
+            if (roles?.Length > 0)
+                claims = roles.Aggregate(claims, (claims, role) => { claims.Add(new Claim(ClaimTypes.Role, role)); return claims; });
 
             var tokenDescription = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = ConstantsSecurity.Exp(30, FormatExp.Minutes).ToUniversalTime(), //Expires requires the DateTime in UTC format.
+                Expires = ConstantsSecurity.Exp(1, FormatExp.Hours).ToUniversalTime(), //Expires requires the DateTime in UTC format.
                 SigningCredentials = credentials
             };
 
@@ -33,7 +37,8 @@ namespace Security
             {
                 new(JwtRegisteredClaimNames.Iss, ConstantsSecurity.ISS),
                 new(JwtRegisteredClaimNames.Name, user.FirstName + " " + user.LastName),
-                new(JwtRegisteredClaimNames.Email, user.Email)
+                new(JwtRegisteredClaimNames.Email, user.Email),
+                new(JwtRegisteredClaimNames.Sub, ConstantsSecurity.SUB)
             };
         }
 
