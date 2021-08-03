@@ -7,7 +7,8 @@ namespace Security.Constants
     public static class ConstantsSecurity
     {
         public const string KEYWORD_JWT = "¡my secr3t keYw0rd!";
-        public const string ISS = @"https://localhost:44302/api/Users";
+        public const string ISS = @"https://localhost:44302/api/Users/token";
+        public const string SUB = "CoursesSaleAPI";
         public const string ALGORITHM = SecurityAlgorithms.HmacSha512;
         public static SymmetricSecurityKey Key => new(Encoding.UTF8.GetBytes(KEYWORD_JWT));
         public static Func<double, FormatExp, DateTime> Exp => static(add, format) => format switch
