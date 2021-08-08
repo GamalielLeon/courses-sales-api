@@ -67,6 +67,7 @@ namespace CoursesSaleAPI.Controllers
             return Ok(courseResponse);
         }
 
+        [Authorize(Roles = GlobalConstants.ROLES_ALLOWED_FOR_CREATE_UPDATE_COURSES)]
         [HttpPost(GlobalConstants.COURSES_WITH_INSTRUCTORS_AND_PRICE)]
         public async Task<ActionResult<CourseView>> PostWithInstructorsAndPriceAsync([FromBody] CourseWithInstructorsAndPriceRequest courseRequest)
         {
@@ -75,6 +76,7 @@ namespace CoursesSaleAPI.Controllers
             return Ok(courseResponse);
         }
 
+        [Authorize(Roles = GlobalConstants.ROLES_ALLOWED_FOR_CREATE_UPDATE_COURSES)]
         [HttpPut(GlobalConstants.COURSES_WITH_INSTRUCTORS_AND_PRICE + "/{id}")]
         public async Task<ActionResult<CourseView>> PutWithInstructorsAsync([FromBody] CourseWithInstructorsAndPriceRequest courseRequest, Guid id)
         {

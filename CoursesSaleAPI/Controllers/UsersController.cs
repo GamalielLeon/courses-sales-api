@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace CoursesSaleAPI.Controllers
 {
-    [Authorize(Roles = GlobalConstants.ROLES_ALLOWED_FOR_INSTRUCTORS_CONTROLLER)]
+    [Authorize(Roles = GlobalConstants.ROLES_ALLOWED_FOR_USERS_CONTROLLER)]
     [Route(GlobalConstants.GENERIC_ENDPOINT)]
     [ApiController]
     public class UsersController : PaginationController<User, UsersPaged, UserRequest, UserResponse>

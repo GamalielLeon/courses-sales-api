@@ -38,6 +38,7 @@ namespace CoursesSaleAPI.Controllers
             return Ok(usersWithRoles);
         }
 
+        [Authorize(Roles = GlobalConstants.USER_ROLE)]
         [HttpGet("GetUserWithRolesById/{id}")]
         public async Task<ActionResult<UserRoleResponse>> GetUserWithRolesByIdAsync(Guid id)
         {
@@ -47,6 +48,7 @@ namespace CoursesSaleAPI.Controllers
             return Ok(userWithRoles);
         }
 
+        [Authorize(Roles = GlobalConstants.USER_ROLE)]
         [HttpGet("GetUserWithRolesByUserName/{username}")]
         public async Task<ActionResult<UserRoleResponse>> GetUserWithRolesByUserNameAsync(string username)
         {
