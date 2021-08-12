@@ -32,17 +32,19 @@ namespace CoursesSaleAPI.Services
 
         public async Task<User> AddUserAsync(User user, string password)
         {
-            //If email or username sent already exists, return a 400 error.
-            if (await _repository.AnyAsync(u => u.NormalizedEmail == user.Email.ToUpper()))
-                throw new CustomException(ConstantsErrors.DUPLICATE_EMAIL, errorDescriptions[ConstantsErrors.DUPLICATE_EMAIL]);
-            if (await _repository.AnyAsync(u => u.NormalizedUserName == user.UserName.ToUpper()))
-                throw new CustomException(ConstantsErrors.DUPLICATE_USERNAME, errorDescriptions[ConstantsErrors.DUPLICATE_USERNAME]);
             user.CreatedAt = DateTime.Now;
-            //If save was succeded, return the user created, otherwise return a 400 error.
-            IdentityResult result = await _userManager.CreateAsync(user, password);
-            if (result.Succeeded) return await _userManager.FindByEmailAsync(user.Email);
-            IdentityError error = result.Errors.First();
-            throw new CustomException(error.Code, error.Description, Code.Error500);
+            try
+            {
+                //If save was succeded, return the user created, otherwise return a 400 error.
+                IdentityResult result = await _userManager.CreateAsync(user, password);
+                if (result.Succeeded) return await _userManager.FindByEmailAsync(user.Email);
+                IdentityError error = result.Errors.First();
+                throw new CustomException(error.Code, error.Description, Code.Error500);
+            }
+            catch (Exception ex)
+            {
+                throw CheckExceptionforDuplicateValue(ex, nameof(Role));
+            }
         }
 
         public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest)
@@ -53,6 +55,7 @@ namespace CoursesSaleAPI.Services
             //Check if password sent in the request matches with the password registered.
             if (!(await _signInManager.CheckPasswordSignInAsync(user, loginRequest.Password, false)).Succeeded)
                 throw new CustomException(UNAUTHORIZED_ERROR, errorDescriptions[UNAUTHORIZED_ERROR], Code.Error401);
+
             var roleCodes = (await _serviceUserRole.GetUserRolesAsync(ur => ur.UserId == user.Id)).Select(static r => r.Code);
             return new LoginResponse() { Email = user.Email, UserName = user.UserName, Token = CreateToken(user, roleCodes.ToArray()) };
         }
