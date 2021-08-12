@@ -41,7 +41,7 @@ namespace CoursesSaleAPI.Services
                 await _unitOfWork.SaveAsync();
                 return courseCreated;
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
                 throw CheckExceptionforDuplicateValue(ex, nameof(Course));
             }
@@ -80,7 +80,7 @@ namespace CoursesSaleAPI.Services
                 await _unitOfWork.SaveAsync();
                 return courseUpdated;
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
                 throw CheckExceptionforDuplicateValue(ex, nameof(Course));
             }

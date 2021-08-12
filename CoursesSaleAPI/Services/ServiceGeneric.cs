@@ -27,7 +27,7 @@ namespace CoursesSaleAPI.Services
         }
 
         //Returns a CustomException if the 'ex' passed was yielded due to a duplicate value. Otherwise, returns the original 'ex'.
-        protected Exception CheckExceptionforDuplicateValue(DbUpdateException ex, string entityName)
+        protected Exception CheckExceptionforDuplicateValue(Exception ex, string entityName)
         {
             Exception exception = ex.InnerException;
             if (exception.Message.Contains("duplicate key"))
@@ -47,7 +47,7 @@ namespace CoursesSaleAPI.Services
                 _unitOfWork.Save();
                 return entityCreated;
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
                 throw CheckExceptionforDuplicateValue(ex, typeof(T).Name);
             }
@@ -62,7 +62,7 @@ namespace CoursesSaleAPI.Services
                 await _unitOfWork.SaveAsync();
                 return entityCreated;
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
                 throw CheckExceptionforDuplicateValue(ex, typeof(T).Name);
             }
@@ -158,7 +158,7 @@ namespace CoursesSaleAPI.Services
                 _unitOfWork.Save();
                 return entityUpdated;
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
                 throw CheckExceptionforDuplicateValue(ex, typeof(T).Name);
             }
@@ -182,7 +182,7 @@ namespace CoursesSaleAPI.Services
                 await _unitOfWork.SaveAsync();
                 return entityUpdated;
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
                 throw CheckExceptionforDuplicateValue(ex, typeof(T).Name);
             }
