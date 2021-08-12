@@ -34,5 +34,28 @@ namespace CoursesSaleAPI.Services
             IdentityError error = result.Errors.First();
             throw new CustomException(error.Code, error.Description, Code.Error500);
         }
+
+        public override async Task<Role> UpdateAsync(Guid id, Role role)
+        {
+            Role roleToUpdate = await _repository.GetAsync(id);
+            if (roleToUpdate == null)
+                throw new CustomException(NOT_FOUND_ERROR, errorDescriptions[NOT_FOUND_ERROR], Code.Error404);
+            roleToUpdate.Name = role.Name;
+            roleToUpdate.Code = role.Code;
+            roleToUpdate.UpdatedAt = DateTime.Now;
+
+            try
+            {
+                //If save was successfull, return the role created, otherwise return a 500 error.
+                IdentityResult result = await _roleManager.UpdateAsync(roleToUpdate);
+                if (result.Succeeded) return await _roleManager.FindByNameAsync(roleToUpdate.Name);
+                IdentityError error = result.Errors.First();
+                throw new CustomException(error.Code, error.Description, Code.Error500);
+            }
+            catch (Exception ex)
+            {
+                throw CheckExceptionforDuplicateValue(ex, nameof(Role));
+            }
+        }
     }
 }
