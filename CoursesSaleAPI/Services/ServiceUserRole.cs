@@ -32,8 +32,8 @@ namespace CoursesSaleAPI.Services
             if (roleCodesLength == 0) throw new CustomException("EmptyRoleCodes", "RoleCodes field must not be null or empty");
             if (roleCodes.Distinct().Count() != roleCodesLength)
                 throw new CustomException("RoleCodesDuplicate", "One or more role codes are duplicated");
-            if (roleCodesLength > 5 || roleCodesLength > await _roleRepository.CountRecordsAsync())
-                throw new CustomException("ExceededRoles", "RoleCodes length is greater than 5 or greater than the number of roles in the database");
+            if (roleCodesLength > await _roleRepository.CountRecordsAsync())
+                throw new CustomException("ExceededRoles", "RoleCodes length is greater than the number of roles in the database");
 
             IQueryable<Guid> roleIdsMatched = await GetRoleIdsMatchedAsync(roleCodes);
             if (user.UserRoles.Select(static ur => ur.RoleId).Intersect(roleIdsMatched).Any())
@@ -69,7 +69,7 @@ namespace CoursesSaleAPI.Services
 
             if (userRoles.Length == 0) throw new CustomException("NoRolesFound", "This user has no roles");
             if (roleCodesLength == 0 || roleCodesLength > userRoles.Length)
-                throw new CustomException("RoleCodesLengthError", $"RoleCodes length must be greater than 0 and less than or equal to {userRoles.Length}");
+                throw new CustomException("RoleCodesLengthError", $"RoleCodes length must be greater than 0 and less than {userRoles.Length}");
             if (roleCodes.Distinct().Count() != roleCodesLength)
                 throw new CustomException("RoleCodesDuplicate", "One or more role codes are duplicated");
             
@@ -101,8 +101,7 @@ namespace CoursesSaleAPI.Services
                 user = await _userRepository.FindOneAsync(u => u.NormalizedUserName == ((string)parameter).ToUpper());
             if (parameter.GetType().Name == nameof(Guid))
                 user = await _userRepository.GetAsync((Guid)parameter);
-            if (user == null)
-                throw new CustomException(NOT_FOUND_ERROR, errorDescriptions[NOT_FOUND_ERROR], Code.Error404);
+            if (user == null) throw CustomExceptionNotFound404;
             return user;
         }
 

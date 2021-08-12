@@ -1,5 +1,4 @@
-﻿using CoursesSaleAPI.Helpers.ErrorHandler;
-using Domain.Contracts.Repository;
+﻿using Domain.Contracts.Repository;
 using Domain.Contracts.Service;
 using Domain.Contracts.UnitOfWork;
 using Domain.Entities;
@@ -50,8 +49,7 @@ namespace CoursesSaleAPI.Services
         public async Task<Course> UpdateWithInstructorsAndPriceAsync(Course course, Guid id)
         {
             Course courseOutOfDate = await _repository.GetIncludingAsync(id, static c => c.Price);
-            if (courseOutOfDate == null)
-                throw new CustomException(NOT_FOUND_ERROR, errorDescriptions[NOT_FOUND_ERROR], Code.Error404);
+            if (courseOutOfDate == null) throw CustomExceptionNotFound404;
 
             //Get the sets to add and delete.
             IEnumerable<Guid> instructorIdsRequest = course.CourseInstructors.Select(static cir => cir.Id);
